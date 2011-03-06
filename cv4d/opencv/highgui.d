@@ -1,3 +1,5 @@
+module cv4d.opencv.highgui;
+
 //##############################################################################
 //##### opencv2/highgui/highgui_c.h
 //##############################################################################
@@ -43,19 +45,8 @@
 //
 //M*/
 
-#ifndef __OPENCV_HIGHGUI_H__
-#define __OPENCV_HIGHGUI_H__
-
-#include "opencv2/core/core_c.h"
-#if defined WIN32 || defined _WIN32
-   	#include <windows.h>
-	#undef min
-	#undef max
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+import cv4d.opencv.core;
+extern (C):
 
 /****************************************************************************************\
 *                                  Basic GUI functions                                   *
@@ -78,31 +69,31 @@ enum {	CV_STYLE_NORMAL			= 0,//QFont::StyleNormal,
 
 //for color cvScalar(blue_component, green_component, red\_component[, alpha_component])
 //and alpha= 0 <-> 0xFF (not transparent <-> transparent)
-CVAPI(CvFont) cvFontQt(const char* nameFont, int pointSize CV_DEFAULT(-1), CvScalar color CV_DEFAULT(cvScalarAll(0)), int weight CV_DEFAULT(CV_FONT_NORMAL),  int style CV_DEFAULT(CV_STYLE_NORMAL), int spacing CV_DEFAULT(0));
+CvFont cvFontQt(const char* nameFont, int pointSize = -1, CvScalar color = cvScalarAll(0), int weight = CV_FONT_NORMAL ,  int style = CV_STYLE_NORMAL , int spacing = 0);
 
-CVAPI(void) cvAddText(const CvArr* img, const char* text, CvPoint org, CvFont *arg2);
+void cvAddText(const CvArr* img, const char* text, CvPoint org, CvFont *arg2);
 
-CVAPI(void) cvDisplayOverlay(const char* name, const char* text, int delayms);
-CVAPI(void) cvDisplayStatusBar(const char* name, const char* text, int delayms);
+void cvDisplayOverlay(const char* name, const char* text, int delayms);
+void cvDisplayStatusBar(const char* name, const char* text, int delayms);
 
-typedef void (CV_CDECL *CvOpenGLCallback)(void* userdata);
-CVAPI(void) cvCreateOpenGLCallback( const char* window_name, CvOpenGLCallback callbackOpenGL, void* userdata CV_DEFAULT(NULL), double angle CV_DEFAULT(-1), double zmin CV_DEFAULT(-1), double zmax CV_DEFAULT(-1));
+alias void function(void* userdata) CvOpenGLCallback;
+void cvCreateOpenGLCallback( const char* window_name, CvOpenGLCallback callbackOpenGL, void* userdata = null, double angle = -1, double zmin = -1, double zmax = -1);
 
-CVAPI(void) cvSaveWindowParameters(const char* name);
-CVAPI(void) cvLoadWindowParameters(const char* name);
-CVAPI(int) cvStartLoop(int (*pt2Func)(int argc, char *argv[]), int argc, char* argv[]);
-CVAPI(void) cvStopLoop();
+void cvSaveWindowParameters(const char* name);
+void cvLoadWindowParameters(const char* name);
+int cvStartLoop(int function(int argc, char *argv[]) pt2Func, int argc, char* argv[]);
+void cvStopLoop();
 
-typedef void (CV_CDECL *CvButtonCallback)(int state, void* userdata);
+alias void function(int state, void* userdata) CvButtonCallback;
 enum {CV_PUSH_BUTTON = 0, CV_CHECKBOX = 1, CV_RADIOBOX = 2};
-CVAPI(int) cvCreateButton( const char* button_name CV_DEFAULT(NULL),CvButtonCallback on_change CV_DEFAULT(NULL), void* userdata CV_DEFAULT(NULL) , int button_type CV_DEFAULT(CV_PUSH_BUTTON), int initial_button_state CV_DEFAULT(0));
+int cvCreateButton( const char* button_name = null,CvButtonCallback on_change = null, void* userdata = null , int button_type = CV_PUSH_BUTTON, int initial_button_state = 0);
 //----------------------
 
 
 /* this function is used to set some external parameters in case of X Window */
-CVAPI(int) cvInitSystem( int argc, char** argv );
+int cvInitSystem( int argc, char** argv );
 
-CVAPI(int) cvStartWindowThread();
+int cvStartWindowThread();
 
 // ---------  YV ---------
 enum
@@ -127,47 +118,47 @@ enum
 };
 
 /* create window */
-CVAPI(int) cvNamedWindow( const char* name, int flags CV_DEFAULT(CV_WINDOW_AUTOSIZE) );
+int cvNamedWindow( const char* name, int flags = CV_WINDOW_AUTOSIZE );
 
 /* Set and Get Property of the window */
-CVAPI(void) cvSetWindowProperty(const char* name, int prop_id, double prop_value);
-CVAPI(double) cvGetWindowProperty(const char* name, int prop_id);
+void cvSetWindowProperty(const char* name, int prop_id, double prop_value);
+double cvGetWindowProperty(const char* name, int prop_id);
 
 /* display image within window (highgui windows remember their content) */
-CVAPI(void) cvShowImage( const char* name, const CvArr* image );
+void cvShowImage( const char* name, const CvArr* image );
 
 /* resize/move window */
-CVAPI(void) cvResizeWindow( const char* name, int width, int height );
-CVAPI(void) cvMoveWindow( const char* name, int x, int y );
+void cvResizeWindow( const char* name, int width, int height );
+void cvMoveWindow( const char* name, int x, int y );
 
 
 /* destroy window and all the trackers associated with it */
-CVAPI(void) cvDestroyWindow( const char* name );
+void cvDestroyWindow( const char* name );
 
-CVAPI(void) cvDestroyAllWindows(void);
+void cvDestroyAllWindows();
 
 /* get native window handle (HWND in case of Win32 and Widget in case of X Window) */
-CVAPI(void*) cvGetWindowHandle( const char* name );
+void* cvGetWindowHandle( const char* name );
 
 /* get name of highgui window given its native handle */
-CVAPI(const char*) cvGetWindowName( void* window_handle );
+const(char)* cvGetWindowName( void* window_handle );
 
 
-typedef void (CV_CDECL *CvTrackbarCallback)(int pos);
+alias void function(int pos) CvTrackbarCallback;
 
 /* create trackbar and display it on top of given window, set callback */
-CVAPI(int) cvCreateTrackbar( const char* trackbar_name, const char* window_name,
-                             int* value, int count, CvTrackbarCallback on_change CV_DEFAULT(NULL));
+int cvCreateTrackbar( const char* trackbar_name, const char* window_name,
+                      int* value, int count, CvTrackbarCallback on_change = null);
 
-typedef void (CV_CDECL *CvTrackbarCallback2)(int pos, void* userdata);
+alias void function(int pos, void* userdata) CvTrackbarCallback2;
 
-CVAPI(int) cvCreateTrackbar2( const char* trackbar_name, const char* window_name,
-                              int* value, int count, CvTrackbarCallback2 on_change,
-                              void* userdata CV_DEFAULT(0));
+int cvCreateTrackbar2( const char* trackbar_name, const char* window_name,
+                       int* value, int count, CvTrackbarCallback2 on_change,
+                       void* userdata = null);
 
 /* retrieve or set trackbar position */
-CVAPI(int) cvGetTrackbarPos( const char* trackbar_name, const char* window_name );
-CVAPI(void) cvSetTrackbarPos( const char* trackbar_name, const char* window_name, int pos );
+int cvGetTrackbarPos( const char* trackbar_name, const char* window_name );
+void cvSetTrackbarPos( const char* trackbar_name, const char* window_name, int pos );
 
 enum
 {
@@ -193,23 +184,23 @@ enum
 	CV_EVENT_FLAG_ALTKEY    =32
 };
 
-typedef void (CV_CDECL *CvMouseCallback )(int event, int x, int y, int flags, void* param);
+alias void function(int event, int x, int y, int flags, void* param) CvMouseCallback;
 
 /* assign callback for mouse events */
-CVAPI(void) cvSetMouseCallback( const char* window_name, CvMouseCallback on_mouse,
-                                void* param CV_DEFAULT(NULL));
+void cvSetMouseCallback( const char* window_name, CvMouseCallback on_mouse,
+                         void* param = null);
 
 enum
 {
-/* 8bit, color or not */
+	/* 8bit, color or not */
 	CV_LOAD_IMAGE_UNCHANGED  =-1,
-/* 8bit, gray */
+	/* 8bit, gray */
 	CV_LOAD_IMAGE_GRAYSCALE  =0,
-/* ?, color */
+	/* ?, color */
 	CV_LOAD_IMAGE_COLOR      =1,
-/* any depth, ? */
+	/* any depth, ? */
 	CV_LOAD_IMAGE_ANYDEPTH   =2,
-/* ?, any color */
+	/* ?, any color */
 	CV_LOAD_IMAGE_ANYCOLOR   =4
 };
 
@@ -219,8 +210,8 @@ enum
   using CV_LOAD_IMAGE_ANYCOLOR alone is equivalent to CV_LOAD_IMAGE_UNCHANGED
   unless CV_LOAD_IMAGE_ANYDEPTH is specified images are converted to 8bit
 */
-CVAPI(IplImage*) cvLoadImage( const char* filename, int iscolor CV_DEFAULT(CV_LOAD_IMAGE_COLOR));
-CVAPI(CvMat*) cvLoadImageM( const char* filename, int iscolor CV_DEFAULT(CV_LOAD_IMAGE_COLOR));
+IplImage* cvLoadImage( const char* filename, int iscolor = CV_LOAD_IMAGE_COLOR);
+CvMat* cvLoadImageM( const char* filename, int iscolor = CV_LOAD_IMAGE_COLOR);
 
 enum
 {
@@ -230,16 +221,16 @@ enum
 };
 
 /* save image to file */
-CVAPI(int) cvSaveImage( const char* filename, const CvArr* image,
-                        const int* params CV_DEFAULT(0) );
+int cvSaveImage( const char* filename, const CvArr* image,
+                 const int* params = null );
 
 /* decode image stored in the buffer */
-CVAPI(IplImage*) cvDecodeImage( const CvMat* buf, int iscolor CV_DEFAULT(CV_LOAD_IMAGE_COLOR));
-CVAPI(CvMat*) cvDecodeImageM( const CvMat* buf, int iscolor CV_DEFAULT(CV_LOAD_IMAGE_COLOR));
+IplImage* cvDecodeImage( const CvMat* buf, int iscolor = CV_LOAD_IMAGE_COLOR);
+CvMat* cvDecodeImageM( const CvMat* buf, int iscolor = CV_LOAD_IMAGE_COLOR);
 
 /* encode image and store the result as a byte vector (single-row 8uC1 matrix) */
-CVAPI(CvMat*) cvEncodeImage( const char* ext, const CvArr* image,
-                             const int* params CV_DEFAULT(0) );
+CvMat* cvEncodeImage( const char* ext, const CvArr* image,
+                      const int* params = null );
 
 enum
 {
@@ -248,20 +239,20 @@ enum
 };
 
 /* utility function: convert one image to another with optional vertical flip */
-CVAPI(void) cvConvertImage( const CvArr* src, CvArr* dst, int flags CV_DEFAULT(0));
+void cvConvertImage( const CvArr* src, CvArr* dst, int flags = 0);
 
 /* wait for key event infinitely (delay<=0) or for "delay" milliseconds */
-CVAPI(int) cvWaitKey(int delay CV_DEFAULT(0));
+int cvWaitKey(int delay = 0);
 
 /****************************************************************************************\
 *                         Working with Video Files and Cameras                           *
 \****************************************************************************************/
 
 /* "black box" capture structure */
-typedef struct CvCapture CvCapture;
+alias void* CvCapture;
 
 /* start capturing frames from video file */
-CVAPI(CvCapture*) cvCreateFileCapture( const char* filename );
+CvCapture* cvCreateFileCapture( const char* filename );
 
 enum
 {
@@ -296,24 +287,24 @@ enum
 };
 
 /* start capturing frames from camera: index = camera_index + domain_offset (CV_CAP_*) */
-CVAPI(CvCapture*) cvCreateCameraCapture( int index );
+CvCapture* cvCreateCameraCapture( int index );
 
 /* grab a frame, return 1 on success, 0 on fail.
   this function is thought to be fast               */
-CVAPI(int) cvGrabFrame( CvCapture* capture );
+int cvGrabFrame( CvCapture* capture );
 
 /* get the frame grabbed with cvGrabFrame(..)
   This function may apply some frame processing like
   frame decompression, flipping etc.
   !!!DO NOT RELEASE or MODIFY the retrieved frame!!! */
-CVAPI(IplImage*) cvRetrieveFrame( CvCapture* capture, int streamIdx CV_DEFAULT(0) );
+IplImage* cvRetrieveFrame( CvCapture* capture, int streamIdx = 0 );
 
 /* Just a combination of cvGrabFrame and cvRetrieveFrame
    !!!DO NOT RELEASE or MODIFY the retrieved frame!!!      */
-CVAPI(IplImage*) cvQueryFrame( CvCapture* capture );
+IplImage* cvQueryFrame( CvCapture* capture );
 
 /* stop capturing/reading and free resources */
-CVAPI(void) cvReleaseCapture( CvCapture** capture );
+void cvReleaseCapture( CvCapture** capture );
 
 enum
 {
@@ -340,73 +331,64 @@ enum
 };
 
 /* retrieve or set capture properties */
-CVAPI(double) cvGetCaptureProperty( CvCapture* capture, int property_id );
-CVAPI(int)    cvSetCaptureProperty( CvCapture* capture, int property_id, double value );
+double cvGetCaptureProperty( CvCapture* capture, int property_id );
+int    cvSetCaptureProperty( CvCapture* capture, int property_id, double value );
 
 // Return the type of the capturer (eg, CV_CAP_V4W, CV_CAP_UNICAP), which is unknown if created with CV_CAP_ANY
-CVAPI(int)    cvGetCaptureDomain( CvCapture* capture);  
+int    cvGetCaptureDomain( CvCapture* capture);  
 
 /* "black box" video file writer structure */
-typedef struct CvVideoWriter CvVideoWriter;
+alias void* CvVideoWriter;
 
-CV_INLINE int CV_FOURCC(char c1, char c2, char c3, char c4)
+int CV_FOURCC(char c1, char c2, char c3, char c4)
 {
 	return (c1 & 255) + ((c2 & 255) << 8) + ((c3 &255) << 16) + ((c4 & 255) << 24);
 }
 
-#define CV_FOURCC_PROMPT -1  /* Open Codec Selection Dialog (Windows only) */
-#define CV_FOURCC_DEFAULT CV_FOURCC('I', 'Y', 'U', 'V') /* Use default codec for specified filename (Linux only) */
+enum CV_FOURCC_PROMPT = -1;  /* Open Codec Selection Dialog (Windows only) */
+enum CV_FOURCC_DEFAULT = CV_FOURCC('I', 'Y', 'U', 'V'); /* Use default codec for specified filename (Linux only) */
 
 /* initialize video file writer */
-CVAPI(CvVideoWriter*) cvCreateVideoWriter( const char* filename, int fourcc,
-                                           double fps, CvSize frame_size,
-                                           int is_color CV_DEFAULT(1));
+CvVideoWriter* cvCreateVideoWriter( const char* filename, int fourcc,
+                                    double fps, CvSize frame_size,
+                                    int is_color = 1);
 
 //CVAPI(CvVideoWriter*) cvCreateImageSequenceWriter( const char* filename,
-//                                                   int is_color CV_DEFAULT(1));
+//                                                   int is_color = 1);
 
 /* write frame to video file */
-CVAPI(int) cvWriteFrame( CvVideoWriter* writer, const IplImage* image );
+int cvWriteFrame( CvVideoWriter* writer, const IplImage* image );
 
 /* close video file writer */
-CVAPI(void) cvReleaseVideoWriter( CvVideoWriter** writer );
+void cvReleaseVideoWriter( CvVideoWriter** writer );
 
 /****************************************************************************************\
 *                              Obsolete functions/synonyms                               *
 \****************************************************************************************/
 
-#define cvCaptureFromFile cvCreateFileCapture
-#define cvCaptureFromCAM cvCreateCameraCapture
-#define cvCaptureFromAVI cvCaptureFromFile
-#define cvCreateAVIWriter cvCreateVideoWriter
-#define cvWriteToAVI cvWriteFrame
-#define cvAddSearchPath(path)
-#define cvvInitSystem cvInitSystem
-#define cvvNamedWindow cvNamedWindow
-#define cvvShowImage cvShowImage
-#define cvvResizeWindow cvResizeWindow
-#define cvvDestroyWindow cvDestroyWindow
-#define cvvCreateTrackbar cvCreateTrackbar
-#define cvvLoadImage(name) cvLoadImage((name),1)
-#define cvvSaveImage cvSaveImage
-#define cvvAddSearchPath cvAddSearchPath
-#define cvvWaitKey(name) cvWaitKey(0)
-#define cvvWaitKeyEx(name,delay) cvWaitKey(delay)
-#define cvvConvertImage cvConvertImage
-#define HG_AUTOSIZE CV_WINDOW_AUTOSIZE
-#define set_preprocess_func cvSetPreprocessFuncWin32
-#define set_postprocess_func cvSetPostprocessFuncWin32
+alias cvCreateFileCapture cvCaptureFromFile;
+alias cvCreateCameraCapture cvCaptureFromCAM;
+alias cvCaptureFromFile cvCaptureFromAVI;
+alias cvCreateVideoWriter cvCreateAVIWriter;
+alias cvWriteFrame cvWriteToAVI;
+void cvAddSearchPath(T)(T path){}
+alias cvInitSystem cvvInitSystem;
+alias cvNamedWindow cvvNamedWindow;
+alias cvShowImage cvvShowImage;
+alias cvResizeWindow cvvResizeWindow;
+alias cvDestroyWindow cvvDestroyWindow;
+alias cvCreateTrackbar cvvCreateTrackbar;
+IplImage* cvvLoadImage(const char* name) { return cvLoadImage(name,1); }
+alias cvSaveImage cvvSaveImage;
+alias cvAddSearchPath cvvAddSearchPath;
+int cvvWaitKey(const char* name) { return cvWaitKey(0); }
+int cvvWaitKeyEx(const char* name, int delay) { return cvWaitKey(delay); }
+alias cvConvertImage cvvConvertImage;
+alias CV_WINDOW_AUTOSIZE HG_AUTOSIZE;
+alias cvSetPreprocessFuncWin32 set_preprocess_func;
+alias cvSetPostprocessFuncWin32 set_postprocess_func;
 
-#if defined WIN32 || defined _WIN32
-
-typedef int (CV_CDECL * CvWin32WindowCallback)(HWND, UINT, WPARAM, LPARAM, int*);
-CVAPI(void) cvSetPreprocessFuncWin32( CvWin32WindowCallback on_preprocess );
-CVAPI(void) cvSetPostprocessFuncWin32( CvWin32WindowCallback on_postprocess );
-
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+private import core.sys.windows.windows: HWND, UINT, WPARAM, LPARAM;
+alias int function(HWND, UINT, WPARAM, LPARAM, int*) CvWin32WindowCallback;
+void cvSetPreprocessFuncWin32( CvWin32WindowCallback on_preprocess );
+void cvSetPostprocessFuncWin32( CvWin32WindowCallback on_postprocess );
