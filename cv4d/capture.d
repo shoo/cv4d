@@ -16,18 +16,18 @@ protected:
 	/***************************************************************************
 	 * OpenCVで扱うことのできる生のCvCapture*
 	 */
-	CvCapture* m_Capture;
+	CvCapture* _capture;
 	invariant()
 	{
-		assert(m_Capture);
+		assert(_capture);
 	}
 	
 	
 	/***************************************************************************
 	 * 内部的にであれば何もしないコンストラクタを呼び出すことが可能
 	 * 
-	 * ただし、必ず m_Capture は何らかの画像で初期化される必要があり、
-	 * デストラクタが呼ばれる際には、確実に m_Capture を null とするか、
+	 * ただし、必ず _capture は何らかの画像で初期化される必要があり、
+	 * デストラクタが呼ばれる際には、確実に _capture を null とするか、
 	 * cvReleaseCapture によって解放されてもよい画像を指定しておくこと
 	 */
 	this()
@@ -41,14 +41,14 @@ protected:
 	 */
 	double property(int property_id)
 	{
-		return cvGetCaptureProperty(m_Capture, property_id);
+		return cvGetCaptureProperty(_capture, property_id);
 	}
 	
 	
 	///ditto
 	void property(int property_id, double value)
 	{
-		return cvSetCaptureProperty(m_Capture, property_id, value);
+		return cvSetCaptureProperty(_capture, property_id, value);
 	}
 	
 	
@@ -60,12 +60,12 @@ private:
 		this(in IplImage* captured)
 		{
 			// ホントは未定義だけど…どうしろと
-			m_Image = cast(IplImage*)captured;
+			_image = cast(IplImage*)captured;
 		}
 		~this()
 		{
 			// ホントは未定義だけど…どうしろと
-			m_Image = null;
+			_image = null;
 		}
 	}
 	
@@ -78,12 +78,12 @@ public:
 	 */
 	CvCapture* handle()
 	{
-		return m_Capture;
+		return _capture;
 	}
 	///ditto
 	const(CvCapture)* handle() const
 	{
-		return m_Capture;
+		return _capture;
 	}
 	/***************************************************************************
 	 * カメラからのビデオキャプチャを初期化する
@@ -99,7 +99,7 @@ public:
 	 */
 	this(int cameraid)
 	{
-		m_Capture = cvCreateCameraCapture(cameraid);
+		_capture = cvCreateCameraCapture(cameraid);
 	}
 	
 	
@@ -111,7 +111,7 @@ public:
 	 */
 	this(char[] filename)
 	{
-		m_Capture = cvCreateFileCapture(toMBSz(filename));
+		_capture = cvCreateFileCapture(toMBSz(filename));
 	}
 	
 	
@@ -120,8 +120,8 @@ public:
 	 */
 	~this()
 	{
-		if (m_Capture) cvReleaseCapture(&m_Capture);
-		m_Capture = null;
+		if (_capture) cvReleaseCapture(&_capture);
+		_capture = null;
 	}
 	
 	
@@ -140,7 +140,7 @@ public:
 	 */
 	int grabFrame()
 	{
-		return cvGrabFrame(m_Capture);
+		return cvGrabFrame(_capture);
 	}
 	
 	
@@ -151,7 +151,7 @@ public:
 	 */
 	const(Image) retrieveFrame(int streamIdx = 0)
 	{
-		return new const(CapturedImage)(cvRetrieveFrame(m_Capture, streamIdx));
+		return new const(CapturedImage)(cvRetrieveFrame(_capture, streamIdx));
 	}
 	
 	
@@ -477,7 +477,7 @@ public:
 	 */
 	int domain()
 	{
-		return cvGetCaptureDomain(m_Capture);
+		return cvGetCaptureDomain(_capture);
 	}
 	+/
 }

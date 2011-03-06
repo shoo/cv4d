@@ -169,20 +169,20 @@ protected:
 	/***************************************************************************
 	 * OpenCVで扱うことのできる生のIplImage*
 	 */
-	IplImage* m_Image = null;
+	IplImage* _image = null;
 	
 	
 	//invariant()
 	//{
-	//	assert(m_Image !is null);
+	//	assert(_image !is null);
 	//}
 	
 	
 	/***************************************************************************
 	 * 内部的にであれば何もしないコンストラクタを呼び出すことが可能
 	 * 
-	 * ただし、必ず m_Image は何らかの画像で初期化される必要があり、
-	 * デストラクタが呼ばれる際には、確実に m_Image を null とするか、
+	 * ただし、必ず _image は何らかの画像で初期化される必要があり、
+	 * デストラクタが呼ばれる際には、確実に _image を null とするか、
 	 * cvReleaseImage によって解放されてもよい画像を指定しておくこと
 	 */
 	this()
@@ -231,13 +231,13 @@ public:
 	 */
 	IplImage* handle()
 	{
-		return m_Image;
+		return _image;
 	}
 	
 	
 	const(IplImage)* handle() const
 	{
-		return m_Image;
+		return _image;
 	}
 	
 	
@@ -246,8 +246,8 @@ public:
 	 */
 	this( CvSize size, int depth=IPL_DEPTH_8U, int channels=3 )
 	{
-		m_Image = cvCreateImage( size, depth, channels );
-		if (m_Image is null) error("cannot create image.");
+		_image = cvCreateImage( size, depth, channels );
+		if (_image is null) error("cannot create image.");
 	}
 	
 	
@@ -263,14 +263,14 @@ public:
 	{
 		auto tmp = cvCloneImage(img);
 		if (!tmp) error("cannot create clone.");
-		m_Image = tmp;
+		_image = tmp;
 	}
 	
 	
 	///ditto
 	this(in Image img)
 	{
-		this(img.m_Image);
+		this(img._image);
 	}
 	
 	
@@ -296,8 +296,8 @@ public:
 		{
 			img = cvLoadImage( toMBSz(filename), color );
 		}
-		m_Image = img;
-		if (!m_Image) error("cannot load");
+		_image = img;
+		if (!_image) error("cannot load");
 	}
 	
 	
@@ -328,8 +328,8 @@ public:
 		}
 		
 		if (!obj) error("cannot load");
-		m_Image = retrieveImage(obj);
-		if (!m_Image) error("cannot load");
+		_image = retrieveImage(obj);
+		if (!_image) error("cannot load");
 	}
 	
 	
@@ -352,8 +352,8 @@ public:
 		
 		if (!obj) error("cannot load");
 		
-		m_Image = retrieveImage(obj);
-		if (!m_Image) error("cannot load");
+		_image = retrieveImage(obj);
+		if (!_image) error("cannot load");
 	}
 	
 	
@@ -366,7 +366,7 @@ public:
 		auto m = cvCreateMatHeader(1, imagedata.length, CV_MAKETYPE(CV_8U,1));
 		scope (exit) cvReleaseMat(&m);
 		cvSetData(m, cast(void*)imagedata.ptr, m.step);
-		m_Image = cvDecodeImage(m, color);
+		_image = cvDecodeImage(m, color);
 	}
 	
 	
@@ -377,8 +377,8 @@ public:
 	 */
 	~this()
 	{
-		if (m_Image) cvReleaseImage( &m_Image );
-		m_Image = null;
+		if (_image) cvReleaseImage( &_image );
+		_image = null;
 	}
 	
 	
@@ -388,7 +388,7 @@ public:
 	void save(in char[] filename, in char[] imgname,
 		in char[] comment = null, CvAttrList attr=cvAttrList()) const
 	{
-		cvSave( toMBSz(filename), m_Image, toMBSz(imgname),
+		cvSave( toMBSz(filename), _image, toMBSz(imgname),
 			comment ? toMBSz(comment): null, attr );
 	}
 	
@@ -396,7 +396,7 @@ public:
 	///ditto
 	void save( in char[] filename, in int[] param = null) const
 	{
-		cvSaveImage( toMBSz(filename), m_Image, param ? (param~0).ptr : null );
+		cvSaveImage( toMBSz(filename), _image, param ? (param~0).ptr : null );
 	}
 	
 	
@@ -406,7 +406,7 @@ public:
 	{
 		auto extptr = (ext~'\0').ptr;
 		auto paramptr = param ? (param~0).ptr : null;
-		auto m = cvEncodeImage(extptr, m_Image, paramptr);
+		auto m = cvEncodeImage(extptr, _image, paramptr);
 		scope (exit) cvReleaseMat(&m);
 		dg(m.data.ptr[0..m.cols]);
 	}
@@ -431,7 +431,7 @@ public:
 	 */
 	void write( CvFileStorage* fs, in char[] imgname ) const
 	{
-		cvWrite( fs, toMBSz(imgname), m_Image );
+		cvWrite( fs, toMBSz(imgname), _image );
 	}
 	
 	
@@ -440,7 +440,7 @@ public:
 	 */
 	@property int width() const
 	{
-		return m_Image.width;
+		return _image.width;
 	}
 	
 	
@@ -449,7 +449,7 @@ public:
 	 */
 	@property int height() const
 	{
-		return m_Image.height;
+		return _image.height;
 	}
 	
 	
@@ -458,7 +458,7 @@ public:
 	 */
 	@property CvSize size() const
 	{
-		return cvSize(m_Image.width, m_Image.height);
+		return cvSize(_image.width, _image.height);
 	}
 	
 	
@@ -467,8 +467,8 @@ public:
 	 */
 	@property CvSize roiSize() const
 	{
-		return !m_Image.roi ? cvSize(m_Image.width,m_Image.height) :
-			cvSize(m_Image.roi.width, m_Image.roi.height);
+		return !_image.roi ? cvSize(_image.width,_image.height) :
+			cvSize(_image.roi.width, _image.roi.height);
 	}
 	
 	/***************************************************************************
@@ -476,8 +476,8 @@ public:
 	 */
 	@property CvPoint roiOffset() const
 	{
-		return !m_Image.roi ? cvPoint(0, 0) :
-			cvPoint(m_Image.roi.xOffset, m_Image.roi.yOffset);
+		return !_image.roi ? cvPoint(0, 0) :
+			cvPoint(_image.roi.xOffset, _image.roi.yOffset);
 	}
 	
 	
@@ -486,17 +486,17 @@ public:
 	 */
 	@property CvRect roi() const
 	{
-		return !m_Image.roi
-			? cvRect(0,0,m_Image.width,m_Image.height)
-			: cvRect(m_Image.roi.xOffset, m_Image.roi.yOffset,
-			         m_Image.roi.width,   m_Image.roi.height);
+		return !_image.roi
+			? cvRect(0,0,_image.width,_image.height)
+			: cvRect(_image.roi.xOffset, _image.roi.yOffset,
+			         _image.roi.width,   _image.roi.height);
 	}
 	
 	
 	///ditto
 	@property void roi(CvRect r)
 	{
-		cvSetImageROI(m_Image, r);
+		cvSetImageROI(_image, r);
 	}
 	
 	
@@ -505,7 +505,7 @@ public:
 	 */
 	void resetRoi()
 	{
-		cvResetImageROI(m_Image);
+		cvResetImageROI(_image);
 	}
 	
 	
@@ -514,14 +514,14 @@ public:
 	 */
 	@property int coi() const
 	{
-		return !m_Image.roi ? 0 : m_Image.roi.coi;
+		return !_image.roi ? 0 : _image.roi.coi;
 	}
 	
 	
 	/// ditto
 	@property void coi(int c)
 	{
-		cvSetImageCOI(m_Image, c);
+		cvSetImageCOI(_image, c);
 	}
 	
 	
@@ -530,7 +530,7 @@ public:
 	 */
 	@property int depth() const
 	{
-		return m_Image.depth;
+		return _image.depth;
 	}
 	
 	
@@ -539,7 +539,7 @@ public:
 	 */
 	@property int channels() const
 	{
-		return m_Image.nChannels;
+		return _image.nChannels;
 	}
 	
 	
@@ -557,14 +557,14 @@ public:
 	 */
 	@property void[] data()
 	{
-		return (cast(void*)m_Image.imageData)
-			[0..m_Image.widthStep*m_Image.height];
+		return (cast(void*)_image.imageData)
+			[0.._image.widthStep*_image.height];
 	}
 	/// ditto
 	@property const(void)[] data() const
 	{
-		return (cast(void*)m_Image.imageData)
-			[0..m_Image.widthStep*m_Image.height];
+		return (cast(void*)_image.imageData)
+			[0.._image.widthStep*_image.height];
 	}
 	
 	/***************************************************************************
@@ -572,7 +572,7 @@ public:
 	 */
 	@property int step() const
 	{
-		return m_Image.widthStep;
+		return _image.widthStep;
 	}
 	
 	
@@ -581,7 +581,7 @@ public:
 	 */
 	@property int origin() const
 	{
-		return m_Image.origin;
+		return _image.origin;
 	}
 	
 	
@@ -591,24 +591,24 @@ public:
 	void[] roiRow(int y)
 		out(r)
 		{
-			assert(r.length % m_Image.nChannels == 0);
+			assert(r.length % _image.nChannels == 0);
 		}
 		body
 	{
 		assert(0<=y);
-		assert(m_Image.roi ? y<m_Image.roi.height : y<m_Image.height);
+		assert(_image.roi ? y<_image.roi.height : y<_image.height);
 		
-		if (!m_Image.roi)
+		if (!_image.roi)
 		{
-			return (cast(void*)(m_Image.imageData + y*m_Image.widthStep))
-				[0..m_Image.width*pixSize];
+			return (cast(void*)(_image.imageData + y*_image.widthStep))
+				[0.._image.width*pixSize];
 		}
 		else
 		{
-			auto st = m_Image.roi.xOffset*pixSize;
-			auto ed = st + m_Image.roi.width*pixSize;
-			auto ofs = (y+m_Image.roi.yOffset)*m_Image.widthStep;
-			return (cast(void*)(m_Image.imageData + ofs))[st..ed];
+			auto st = _image.roi.xOffset*pixSize;
+			auto ed = st + _image.roi.width*pixSize;
+			auto ofs = (y+_image.roi.yOffset)*_image.widthStep;
+			return (cast(void*)(_image.imageData + ofs))[st..ed];
 		}
 	}
 	
@@ -617,19 +617,19 @@ public:
 	const(void)[] roiRow(int y) const
 	{
 		assert(0<=y);
-		assert(m_Image.roi ? y<m_Image.roi.height : y<m_Image.height);
+		assert(_image.roi ? y<_image.roi.height : y<_image.height);
 		
-		if (!m_Image.roi)
+		if (!_image.roi)
 		{
-			return (cast(void*)(m_Image.imageData + y*m_Image.widthStep))
-				[0..m_Image.width*pixSize];
+			return (cast(void*)(_image.imageData + y*_image.widthStep))
+				[0.._image.width*pixSize];
 		}
 		else
 		{
-			auto st = m_Image.roi.xOffset*pixSize;
-			auto ed = st + m_Image.roi.width*pixSize;
-			auto ofs = (y+m_Image.roi.yOffset)*m_Image.widthStep;
-			return (cast(void*)(m_Image.imageData + ofs))[st..ed];
+			auto st = _image.roi.xOffset*pixSize;
+			auto ed = st + _image.roi.width*pixSize;
+			auto ofs = (y+_image.roi.yOffset)*_image.widthStep;
+			return (cast(void*)(_image.imageData + ofs))[st..ed];
 		}
 	}
 	
@@ -645,7 +645,7 @@ public:
 	 */
 	void set(CvScalar value, in Image mask = null)
 	{
-		cvSet(m_Image, value, mask ? mask.m_Image: null);
+		cvSet(_image, value, mask ? mask._image: null);
 	}
 	
 	
@@ -654,7 +654,7 @@ public:
 	 */
 	void setZero()
 	{
-		cvZero(m_Image);
+		cvZero(_image);
 	}
 	
 	
@@ -675,7 +675,7 @@ public:
 	}
 	body
 	{
-		cvCopy(src.m_Image, m_Image, mask ? mask.m_Image: null);
+		cvCopy(src._image, _image, mask ? mask._image: null);
 	}
 	
 	
@@ -684,7 +684,7 @@ public:
 	 */
 	void resample(in Image img, int interpolation=CV_INTER_LINEAR)
 	{
-		cvResize(img.m_Image, m_Image, interpolation);
+		cvResize(img._image, _image, interpolation);
 	}
 	
 	
@@ -708,7 +708,7 @@ public:
 			else if (imgAspect < myAspect)
 			{
 				// 縦長
-				bool resetroi = m_Image.roi is null;
+				bool resetroi = _image.roi is null;
 				auto oldroi = roi;
 				scope (exit)
 				{
@@ -742,7 +742,7 @@ public:
 			else
 			{
 				// 横長
-				bool resetroi = m_Image.roi is null;
+				bool resetroi = _image.roi is null;
 				auto oldroi = roi;
 				scope (exit)
 				{
@@ -860,11 +860,11 @@ public:
 	{
 		if (img)
 		{
-			cvFlip(img.handle, m_Image, 1);
+			cvFlip(img.handle, _image, 1);
 		}
 		else
 		{
-			cvFlip(m_Image, null, 1);
+			cvFlip(_image, null, 1);
 		}
 	}
 	
@@ -876,11 +876,11 @@ public:
 	{
 		if (img)
 		{
-			cvFlip(img.handle, m_Image, 0);
+			cvFlip(img.handle, _image, 0);
 		}
 		else
 		{
-			cvFlip(m_Image, null, 0);
+			cvFlip(_image, null, 0);
 		}
 	}
 	
@@ -892,11 +892,11 @@ public:
 	{
 		if (img)
 		{
-			cvFlip(img.handle, m_Image, -1);
+			cvFlip(img.handle, _image, -1);
 		}
 		else
 		{
-			cvFlip(m_Image, null, -1);
+			cvFlip(_image, null, -1);
 		}
 	}
 	
@@ -909,11 +909,11 @@ public:
 	 */
 	void split(Image c1, Image c2 = null, Image c3 = null, Image c4 = null)
 	{
-		cvSplit(m_Image,
-			c1 ? c1.m_Image: null,
-			c2 ? c2.m_Image: null,
-			c3 ? c3.m_Image: null,
-			c4 ? c4.m_Image: null);
+		cvSplit(_image,
+			c1 ? c1._image: null,
+			c2 ? c2._image: null,
+			c3 ? c3._image: null,
+			c4 ? c4._image: null);
 	}
 	
 	
@@ -929,11 +929,11 @@ public:
 	           in Image c4 = null)
 	{
 		cvMerge(
-			c1 ? c1.m_Image: null,
-			c2 ? c2.m_Image: null,
-			c3 ? c3.m_Image: null,
-			c4 ? c4.m_Image: null,
-			m_Image);
+			c1 ? c1._image: null,
+			c2 ? c2._image: null,
+			c3 ? c3._image: null,
+			c4 ? c4._image: null,
+			_image);
 	}
 	
 	
@@ -946,7 +946,7 @@ public:
 	               double sigma1 = 0,
 	               double sigma2 = 0)
 	{
-		cvSmooth(m_Image, m_Image, smoothtype, size1, size2, sigma1, sigma2);
+		cvSmooth(_image, _image, smoothtype, size1, size2, sigma1, sigma2);
 	}
 	
 	
@@ -955,7 +955,7 @@ public:
 	 */
 	void filter(in CvMat* mat)
 	{
-		cvFilter2D(m_Image, m_Image, mat);
+		cvFilter2D(_image, _image, mat);
 	}
 	
 	
@@ -976,7 +976,7 @@ public:
 	               int threshold_type = CV_THRESH_BINARY)
 	{
 		auto a = ((1<<(depth&255))-1);
-		cvThreshold(m_Image, m_Image, threshold*a, max_value*a, threshold_type);
+		cvThreshold(_image, _image, threshold*a, max_value*a, threshold_type);
 	}
 	
 	
@@ -1063,7 +1063,7 @@ public:
 		}
 		if (afch == channels)
 		{
-			cvCvtColor(src.m_Image, m_Image, code);
+			cvCvtColor(src._image, _image, code);
 		}
 		else
 		{
@@ -1084,14 +1084,14 @@ public:
 	 */
 	void convert(in Image src, double scale = 1, double shift = 0)
 	{
-		cvConvertScale(src.m_Image, m_Image, scale, shift);
+		cvConvertScale(src._image, _image, scale, shift);
 	}
 	
 	
 	///ditto
 	void convert(in Matrix src, double scale = 1, double shift = 0)
 	{
-		cvConvertScale(src.handle, m_Image, scale, shift);
+		cvConvertScale(src.handle, _image, scale, shift);
 	}
 	
 	
@@ -1100,7 +1100,7 @@ public:
 	 */
 	void equalize()
 	{
-		cvEqualizeHist(m_Image, m_Image);
+		cvEqualizeHist(_image, _image);
 	}
 	
 	
@@ -1109,7 +1109,7 @@ public:
 	 */
 	void applyLUT(Matrix lut)
 	{
-		cvLUT(m_Image, m_Image, lut.handle);
+		cvLUT(_image, _image, lut.handle);
 	}
 	
 	
@@ -1125,14 +1125,14 @@ public:
 	 */
 	void add( in Image img, in Image mask = null)
 	{
-		cvAdd(m_Image, img.m_Image, m_Image, mask ? mask.m_Image: null);
+		cvAdd(_image, img._image, _image, mask ? mask._image: null);
 	}
 	
 	
 	///ditto
 	void add( in CvScalar value, in Image mask = null)
 	{
-		cvAddS(m_Image, value, m_Image, mask ? mask.m_Image: null);
+		cvAddS(_image, value, _image, mask ? mask._image: null);
 	}
 	
 	
@@ -1141,14 +1141,14 @@ public:
 	 */
 	void sub( in Image img, in Image mask = null)
 	{
-		cvSub(m_Image, img.m_Image, m_Image, mask ? mask.m_Image: null);
+		cvSub(_image, img._image, _image, mask ? mask._image: null);
 	}
 	
 	
 	///ditto
 	void sub( in CvScalar value, in Image mask = null)
 	{
-		cvSubS(m_Image, value, m_Image, mask ? mask.m_Image: null);
+		cvSubS(_image, value, _image, mask ? mask._image: null);
 	}
 	
 	
@@ -1157,7 +1157,7 @@ public:
 	 */
 	void mul( in Image img, double scale = 1.0)
 	{
-		cvMul(m_Image, img.m_Image, m_Image, scale);
+		cvMul(_image, img._image, _image, scale);
 	}
 	
 	
@@ -1166,7 +1166,7 @@ public:
 	 */
 	void div( in Image img, double scale = 1.0)
 	{
-		cvDiv(m_Image, img.m_Image, m_Image, scale);
+		cvDiv(_image, img._image, _image, scale);
 	}
 	
 	
@@ -1175,7 +1175,7 @@ public:
 	 */
 	void pow( double power)
 	{
-		cvPow(m_Image, m_Image, power);
+		cvPow(_image, _image, power);
 	}
 	
 	
@@ -1184,14 +1184,14 @@ public:
 	 */
 	void and(in Image img, in Image mask = null)
 	{
-		cvAnd(m_Image, img.m_Image, m_Image, mask ? mask.m_Image: null);
+		cvAnd(_image, img._image, _image, mask ? mask._image: null);
 	}
 	
 	
 	///ditto
 	void and(in CvScalar value, in Image mask = null)
 	{
-		cvAndS(m_Image, value, m_Image, mask ? mask.m_Image: null);
+		cvAndS(_image, value, _image, mask ? mask._image: null);
 	}
 	
 	
@@ -1200,14 +1200,14 @@ public:
 	 */
 	void or(in Image img, in Image mask = null)
 	{
-		cvOr(m_Image, img.m_Image, m_Image, mask ? mask.m_Image: null);
+		cvOr(_image, img._image, _image, mask ? mask._image: null);
 	}
 	
 	
 	///ditto
 	void or(in CvScalar value, in Image mask = null)
 	{
-		cvOrS(m_Image, value, m_Image, mask ? mask.m_Image: null);
+		cvOrS(_image, value, _image, mask ? mask._image: null);
 	}
 	
 	
@@ -1216,14 +1216,14 @@ public:
 	 */
 	void xor(in Image img, in Image mask = null)
 	{
-		cvXor(m_Image, img.m_Image, m_Image, mask ? mask.m_Image: null);
+		cvXor(_image, img._image, _image, mask ? mask._image: null);
 	}
 	
 	
 	///ditto
 	void xor(in CvScalar value, in Image mask = null)
 	{
-		cvXorS(m_Image, value, m_Image, mask ? mask.m_Image: null);
+		cvXorS(_image, value, _image, mask ? mask._image: null);
 	}
 	
 	
@@ -1335,8 +1335,8 @@ class UserDataImage: Image
 	this(void[] data, CvSize size, int depth, int channels,
 		int aOrigin = IPL_ORIGIN_TL, int alignment = 4)
 	{
-		m_Image = cast(IplImage*)cvAlloc(IplImage.sizeof);
-		cvInitImageHeader(m_Image, size, depth, channels, aOrigin, alignment);
+		_image = cast(IplImage*)cvAlloc(IplImage.sizeof);
+		cvInitImageHeader(_image, size, depth, channels, aOrigin, alignment);
 		this.data = data;
 		super();
 	}
@@ -1779,7 +1779,7 @@ public:
  */
 void calcBackProject(Image img, Image dst, Histogram hist)
 {
-	cvCalcBackProject(&img.m_Image, cast(CvArr*)dst.m_Image, hist.m_Histogram);
+	cvCalcBackProject(&img._image, cast(CvArr*)dst._image, hist.m_Histogram);
 }
 
 /*******************************************************************************
@@ -1788,7 +1788,7 @@ void calcBackProject(Image img, Image dst, Histogram hist)
 void calcBackProjectPatch(Image img, Image dst, CvSize patchSize,
                           Histogram hist, int method, float factor)
 {
-	cvCalcBackProjectPatch(&img.m_Image, cast(CvArr*)dst.m_Image, patchSize,
+	cvCalcBackProjectPatch(&img._image, cast(CvArr*)dst._image, patchSize,
 	                       hist.m_Histogram, method, factor);
 }
 

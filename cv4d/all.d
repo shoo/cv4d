@@ -9,4 +9,5 @@ import cv4d.exception;
 import cv4d.matrix;
 import cv4d.image;
 import cv4d.capture;
+import cv4d.util;
 
