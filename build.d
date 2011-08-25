@@ -153,7 +153,7 @@ int makedoc(Options opt)
 			if (c == '/') c = '.';
 		}
 		
-		auto name = cast(immutable)basename(tmp, ".d");
+		auto name = cast(immutable)getBaseName(tmp, ".d");
 		modules ~= "	$(MODULE_FULL " ~ name ~ ")\n";
 	}
 	std.file.write("doc/candydoc/modules.ddoc", modules);
@@ -170,7 +170,7 @@ int makedoc(Options opt)
 		{
 			if (c == '/') c = '.';
 		}
-		auto docopt = ["-Df" ~ cast(immutable)basename(tmp, ".d") ~ ".html", ss];
+		auto docopt = ["-Df" ~ cast(immutable)getBaseName(tmp, ".d") ~ ".html", ss];
 		writeln("dmd " ~ std.string.join(opts ~ docopt, " "));
 		
 		auto res = system("dmd " ~ std.string.join(opts ~ docopt, " "));
@@ -178,4 +178,19 @@ int makedoc(Options opt)
 	}
 	
 	return 0;
+}
+
+
+
+string[] listdir(string path, string wildcard)
+{
+	string[] ret;
+	foreach(DirEntry de; dirEntries(path, SpanMode.breadth))
+	{
+		if (fnmatch(de.name, wildcard))
+		{
+			ret ~= de.name;
+		}
+	}
+	return ret;
 }

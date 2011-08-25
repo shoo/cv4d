@@ -699,12 +699,8 @@ public:
 	 * 録画
 	 */
 	override void opCall(Image img)
-	in
 	{
 		assert(tmNow <>= 0);
-	}
-	body
-	{
 		if (tmRec !<>= 0)
 		{
 			tmRec = tmNow;
