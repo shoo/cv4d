@@ -48,7 +48,7 @@ protected:
 	///ditto
 	void property(int property_id, double value)
 	{
-		return cvSetCaptureProperty(_capture, property_id, value);
+		cvSetCaptureProperty(_capture, property_id, value);
 	}
 	
 	

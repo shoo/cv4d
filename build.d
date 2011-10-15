@@ -1,26 +1,19 @@
 immutable
-	DEFAULT_SRCDIR  = ["cv4d"],
-	DEFAULT_OUTPUT  = "cv4d",
-	DEFAULT_DOC     = false,
-	DEFAULT_TEST    = false,
-	DEFAULT_LIB     = true,
-	DEFAULT_DEBUG   = false,
-	DEFAULT_JSON    = true,
-	DEFAULT_RELEASE = true,
-	DEFAULT_WARNING = true,
-	DEFAULT_OBJDIR  = ".",
-	DEFAULT_GUI     = false;
+	DEFAULT_SRCDIR   = ["cv4d"],
+	DEFAULT_OUTPUT   = "cv4d",
+	DEFAULT_DOC      = false,
+	DEFAULT_TEST     = false,
+	DEFAULT_LIB      = true,
+	DEFAULT_DEBUG    = false,
+	DEFAULT_JSON     = true,
+	DEFAULT_RELEASE  = true,
+	DEFAULT_WARNING  = true,
+	DEFAULT_PROPERTY = false,
+	DEFAULT_OBJDIR   = ".",
+	DEFAULT_GUI      = false;
 
-import std.exception;
-import std.stdio;
-import std.path;
-import std.process;
-import std.file;
-import std.string;
-import std.array;
-import std.algorithm;
-import std.getopt;
-import std.conv;
+import std.exception, std.stdio, std.path, std.process, std.file, std.string,
+	std.array, std.algorithm, std.getopt, std.conv;
 
 version (BUILD_DUMMY)
 {
@@ -33,6 +26,7 @@ void main(string[] args)
 	Options opt;
 	getopt(args,
 		std.getopt.config.bundling,
+		std.getopt.config.caseSensitive,
 		"test|t", &opt.test,
 		"lib|l", &opt.lib,
 		"debug|d", &opt.dbg,
@@ -42,6 +36,7 @@ void main(string[] args)
 		"doc|D", &opt.doc,
 		"json|j", &opt.json,
 		"warn|w", &opt.warning,
+		"property|prop|p", &opt.property,
 		std.getopt.config.noBundling,
 		"src|s", &srcdir);
 	if (srcdir) opt.src = srcdir;
@@ -68,8 +63,10 @@ void main(string[] args)
 		if (res == 0 && opt.test)
 		{
 			writeln("Begin testing...");
+			stdout.flush();
 			res = system(opt.output);
 			writeln("Complete testing!");
+			return;
 		}
 		
 	}
@@ -88,6 +85,7 @@ struct Options
 	bool doc      = DEFAULT_DOC;
 	bool json     = DEFAULT_JSON;
 	bool warning  = DEFAULT_WARNING;
+	bool property = DEFAULT_PROPERTY;
 	string[] src  = DEFAULT_SRCDIR;
 	string obj    = DEFAULT_OBJDIR;
 	string output = DEFAULT_OUTPUT;
@@ -103,23 +101,31 @@ int compile(Options opt)
 	{
 		opts ~= ["-debug", "-g", "-unittest", "-I."];
 		if (opt.warning)     opts ~= "-w";
+		if (opt.property)    opts ~= "-property";
 		if (opt.options)     opts ~= opt.options;
 		if (opt.output)      opts ~= ["-of"~opt.output];
-		foreach (s; opt.src) opts ~= listdir(s, "*.d");
+		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
+		{
+			if (!ss.isDir && ss.extension == ".d") opts ~= ss;
+		}
 		if (opt.lib)         opts ~= ["-version=BUILD_DUMMY", "-run", "build.d"];
 	}
 	else
 	{
-		if (opt.lib)     opts ~= ["-lib"];
-		if (opt.dbg)     opts ~= ["-debug", "-g"];
-		if (!opt.dbg)    opts ~= ["-release", "-inline", "-O"];
-		if (opt.gui)     opts ~= ["-L/exet:nt/su:windows:4.0"];
-		if (opt.output)  opts ~= ["-of"~opt.output];
-		if (opt.obj)     opts ~= ["-od"~opt.obj];
-		if (opt.warning) opts ~= ["-w"];
-		if (opt.json)    opts ~= ["-X", "-Xf"~opt.output];
-		if (opt.options) opts ~= opt.options;
-		foreach (s; opt.src) opts ~= listdir(s, "*.d");
+		if (opt.lib)      opts ~= ["-lib", "-nofloat"];
+		if (opt.dbg)      opts ~= ["-debug", "-g"];
+		if (!opt.dbg)     opts ~= ["-release", "-inline", "-O"];
+		if (opt.gui)      opts ~= ["-L/exet:nt/su:windows:4.0"];
+		if (opt.output)   opts ~= ["-of"~opt.output];
+		if (opt.obj)      opts ~= ["-od"~opt.obj];
+		if (opt.warning)  opts ~= ["-w"];
+		if (opt.property) opts ~= ["-property"];
+		if (opt.json)     opts ~= ["-X", "-Xf"~opt.output];
+		if (opt.options)  opts ~= opt.options;
+		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
+		{
+			if (!ss.isDir && ss.extension == ".d") opts ~= ss;
+		}
 	}
 	
 	writeln("dmd " ~ std.string.join(opts, " "));
@@ -140,37 +146,43 @@ int makedoc(Options opt)
 	if (opt.options) opts ~= opt.options;
 	
 	string modules = "MODULES =\n";
-	foreach (s; opt.src) foreach (ss; listdir(s, "*.d"))
+	static struct FileData
 	{
-		char[] tmp = ss.dup;
-		foreach (ref char c; tmp)
+		string filename;
+		string modname;
+	}
+	FileData[] docmods;
+	foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
+	{
+		if (ss.isDir) continue;
+		if (ss.extension != ".d" && ss.extension != ".dd") continue;
+		if (ss.baseName == "index.dd")
 		{
-			if (c == '\\') c = '/';
+			docmods ~= FileData(ss, "index");
+			modules ~= "	$(MODULE_FULL index)\n";
 		}
-		if (countUntil(tmp, "/_") != -1) continue;
-		foreach (ref char c; tmp)
+		else
 		{
-			if (c == '/') c = '.';
+			char[] tmp = ss.dup;
+			foreach (ref char c; tmp)
+			{
+				if (c == '\\') c = '/';
+			}
+			if (countUntil(tmp, "/_") != -1) continue;
+			foreach (ref char c; tmp)
+			{
+				if (c == '/') c = '.';
+			}
+			string modname = cast(immutable)baseName(tmp, tmp.extension);
+			modules ~= "	$(MODULE_FULL " ~ modname ~ ")\n";
+			docmods ~= FileData(ss, modname);
 		}
-		
-		auto name = cast(immutable)getBaseName(tmp, ".d");
-		modules ~= "	$(MODULE_FULL " ~ name ~ ")\n";
 	}
 	std.file.write("doc/candydoc/modules.ddoc", modules);
 	
-	foreach (s; opt.src) foreach (ss; listdir(s, "*.d"))
+	foreach (fd; docmods)
 	{
-		char[] tmp = ss.dup;
-		foreach (ref char c; tmp)
-		{
-			if (c == '\\') c = '/';
-		}
-		if (countUntil(tmp, "/_") != -1) continue;
-		foreach (ref char c; tmp)
-		{
-			if (c == '/') c = '.';
-		}
-		auto docopt = ["-Df" ~ cast(immutable)getBaseName(tmp, ".d") ~ ".html", ss];
+		auto docopt = ["-Df" ~ fd.modname ~ ".html", fd.filename];
 		writeln("dmd " ~ std.string.join(opts ~ docopt, " "));
 		
 		auto res = system("dmd " ~ std.string.join(opts ~ docopt, " "));
@@ -178,19 +190,4 @@ int makedoc(Options opt)
 	}
 	
 	return 0;
-}
-
-
-
-string[] listdir(string path, string wildcard)
-{
-	string[] ret;
-	foreach(DirEntry de; dirEntries(path, SpanMode.breadth))
-	{
-		if (fnmatch(de.name, wildcard))
-		{
-			ret ~= de.name;
-		}
-	}
-	return ret;
 }

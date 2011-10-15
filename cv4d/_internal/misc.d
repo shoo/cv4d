@@ -183,13 +183,13 @@ string fromMBSz(in mbchar* str)
 
 bool isXmlOrYaml( in char[] filename )
 {
-	auto suffix = std.path.getExt(filename.idup).dup;
+	auto suffix = std.path.extension(filename.idup).dup;
 	foreach (ref c; suffix) c = cast(char)std.uni.toUniLower(c);
 	switch (suffix)
 	{
-	case "xml":
-	case "yml":
-	case "yaml":
+	case ".xml":
+	case ".yml":
+	case ".yaml":
 		return true;
 	default:;
 	}
