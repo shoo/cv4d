@@ -191,7 +191,9 @@ bool isXmlOrYaml( in char[] filename )
 	case ".yml":
 	case ".yaml":
 		return true;
-	default:;
+	default:
+		{
+		}
 	}
 	return false;
 }

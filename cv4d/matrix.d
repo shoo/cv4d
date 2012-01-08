@@ -67,14 +67,14 @@ public:
 	/***************************************************************************
 	 * OpenCVの関数で利用するためのデータ
 	 */
-	CvMat* handle()
+	@property CvMat* handle()
 	{
 		return _matrix;
 	}
 	
 	
 	///ditto
-	const(CvMat)* handle() const
+	@property const(CvMat)* handle() const
 	{
 		return _matrix;
 	}

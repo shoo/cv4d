@@ -76,12 +76,12 @@ public:
 	/***************************************************************************
 	 * OpenCVでの操作用
 	 */
-	CvCapture* handle()
+	@property CvCapture* handle()
 	{
 		return _capture;
 	}
 	///ditto
-	const(CvCapture)* handle() const
+	@property const(CvCapture)* handle() const
 	{
 		return _capture;
 	}

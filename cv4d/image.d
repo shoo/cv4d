@@ -229,13 +229,13 @@ public:
 	/***************************************************************************
 	 * OpenCVでの操作用
 	 */
-	IplImage* handle()
+	@property IplImage* handle()
 	{
 		return _image;
 	}
 	
 	
-	const(IplImage)* handle() const
+	@property const(IplImage)* handle() const
 	{
 		return _image;
 	}
