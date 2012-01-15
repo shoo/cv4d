@@ -1,5 +1,23 @@
 ﻿/*******************************************************************************
  * 全てのcv4dパッケージのモジュールの集約
+ * 
+ * See_Also:
+ * $(UL
+ *     $(LI $(LINK2 cv4d._all.html, cv4d)
+ *     $(UL
+ *         $(LI $(LINK2 cv4d.opencv._all.html, opencv))
+ *         $(UL
+ *             $(LI $(LINK2 cv4d.opencv.core.html, core))
+ *             $(LI $(LINK2 cv4d.opencv.imgproc.html, imgproc))
+ *             $(LI $(LINK2 cv4d.opencv.highgui.html, highgui))
+ *         )
+ *         $(LI $(LINK2 cv4d.exception.html, exception))
+ *         $(LI $(LINK2 cv4d.matrix.html, matrix))
+ *         $(LI $(LINK2 cv4d.image.html, image))
+ *         $(LI $(LINK2 cv4d.capture.html, capture))
+ *         $(LI $(LINK2 cv4d.util.html, util))
+ *     ))
+ * )
  */
 module cv4d.all;
 
