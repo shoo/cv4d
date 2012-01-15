@@ -184,7 +184,7 @@ string fromMBSz(in mbchar* str)
 bool isXmlOrYaml( in char[] filename )
 {
 	auto suffix = std.path.extension(filename.idup).dup;
-	foreach (ref c; suffix) c = cast(char)std.uni.toUniLower(c);
+	foreach (ref c; suffix) c = cast(char)std.uni.toLower(c);
 	switch (suffix)
 	{
 	case ".xml":
