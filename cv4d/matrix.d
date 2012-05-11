@@ -305,7 +305,7 @@ public:
 	/***************************************************************************
 	 * 行数
 	 */
-	final int rows() const
+	final @property int rows() const
 	{
 		return _matrix.rows;
 	}
@@ -314,7 +314,7 @@ public:
 	/***************************************************************************
 	 * 列数
 	 */
-	final int cols() const
+	final @property int cols() const
 	{
 		return _matrix.cols;
 	}
@@ -323,7 +323,7 @@ public:
 	/***************************************************************************
 	 * 行x列
 	 */
-	final CvSize size() const
+	final @property CvSize size() const
 	{
 		return cvSize(_matrix.rows, _matrix.cols);
 	}
@@ -332,7 +332,7 @@ public:
 	/***************************************************************************
 	 * 行列のタイプ
 	 */
-	final int type() const
+	final @property int type() const
 	{
 		return CV_MAT_TYPE(_matrix.type);
 	}
@@ -341,7 +341,7 @@ public:
 	/***************************************************************************
 	 * 深度
 	 */
-	final int depth() const
+	final @property int depth() const
 	{
 		return CV_MAT_DEPTH(_matrix.type);
 	}
@@ -350,7 +350,7 @@ public:
 	/***************************************************************************
 	 * チャンネル数
 	 */
-	final int channels() const
+	final @property int channels() const
 	{
 		return CV_MAT_CN(_matrix.type);
 	}
@@ -359,7 +359,7 @@ public:
 	/***************************************************************************
 	 * 1要素のサイズ
 	 */
-	final int pixSize() const
+	final @property int pixSize() const
 	{
 		return CV_ELEM_SIZE(_matrix.type);
 	}
@@ -368,12 +368,12 @@ public:
 	/***************************************************************************
 	 * 行列データの要素にアクセス
 	 */
-	final void[] data()
+	final @property void[] data()
 	{
 		return _matrix.data.ptr[0..pixSize*rows*cols];
 	}
 	///ditto
-	const(void)[] data() const
+	final @property const(void)[] data() const
 	{
 		return _matrix.data.ptr[0..pixSize*rows*cols];
 	}
@@ -396,7 +396,7 @@ public:
 	
 	
 	///ditto
-	const(void)[] row(int i) const
+	final const(void)[] row(int i) const
 	{
 		return data[i*step..i*step+step];
 	}
@@ -405,12 +405,12 @@ public:
 	/***************************************************************************
 	 * キャストオーバーロード
 	 */
-	CvMat* opCast()
+	final CvMat* opCast()
 	{
 		return _matrix;
 	}
 	///ditto
-	const(CvMat)* opCast() const
+	final const(CvMat)* opCast() const
 	{
 		return _matrix;
 	}
@@ -419,7 +419,7 @@ public:
 	/***************************************************************************
 	 * 逆行列にする
 	 */
-	Matrix invert()
+	final Matrix invert()
 	{
 		cvInvert(_matrix, _matrix);
 		return this;
@@ -429,7 +429,7 @@ public:
 	/***************************************************************************
 	 * 内積を求める
 	 */
-	double dot(in Matrix mat)const
+	final double dot(in Matrix mat)const
 	{
 		return cvDotProduct(_matrix, mat._matrix);
 	}
@@ -438,7 +438,7 @@ public:
 	/***************************************************************************
 	 * 外積を求める
 	 */
-	Matrix cross(in Matrix mat)
+	final Matrix cross(in Matrix mat)
 	{
 		cvCrossProduct(_matrix, mat._matrix, _matrix);
 		return this;
@@ -448,7 +448,7 @@ public:
 	/***************************************************************************
 	 * 正規化する
 	 */
-	Matrix normalize(double a=1, double b=0, int norm_type=CV_L2, in CvArr* mask=null)
+	final Matrix normalize(double a=1, double b=0, int norm_type=CV_L2, in CvArr* mask=null)
 	{
 		cvNormalize(_matrix, _matrix, a, b, norm_type, mask);
 		return this;
@@ -458,7 +458,7 @@ public:
 	/***************************************************************************
 	 * 行列式の結果を返す
 	 */
-	double det() const
+	final double det() const
 	{
 		return cvDet(_matrix);
 	}
@@ -467,21 +467,21 @@ public:
 	/***************************************************************************
 	 * 加算
 	 */
-	void add(in CvScalar scale, in Matrix m)
+	final void add(in CvScalar scale, in Matrix m)
 	{
 		cvScaleAdd(_matrix, scale, m._matrix, _matrix);
 	}
 	
 	
 	///ditto
-	void add(in Matrix m)
+	final void add(in Matrix m)
 	{
 		add(cvRealScalar(1), m);
 	}
 	
 	
 	///ditto
-	void add(double scale, in Matrix m)
+	final void add(double scale, in Matrix m)
 	{
 		add(cvRealScalar(scale), m);
 	}
@@ -490,14 +490,14 @@ public:
 	/***************************************************************************
 	 * 代入演算子
 	 */
-	void opOpAssign(string op)(in Matrix m) if (op == "*=")
+	final void opOpAssign(string op)(in Matrix m) if (op == "*=")
 	{
 		cross(m);
 	}
 	
 	
 	///ditto
-	void opOpAssign(string op)(in Matrix m) if (op == "+=")
+	final void opOpAssign(string op)(in Matrix m) if (op == "+=")
 	{
 		add(m);
 	}
@@ -506,7 +506,7 @@ public:
 	/***************************************************************************
 	 * 二項演算子
 	 */
-	void opBinary(string op)(in Matrix m) const if (op == "*")
+	final void opBinary(string op)(in Matrix m) const if (op == "*")
 	{
 		auto ret = new Matrix(this);
 		ret *= m;
@@ -515,7 +515,7 @@ public:
 	
 	
 	///ditto
-	void opBinary(string op)(in Matrix m) const if (op == "+")
+	final void opBinary(string op)(in Matrix m) const if (op == "+")
 	{
 		auto mat = new Matrix(this);
 		mat += m;
@@ -611,16 +611,16 @@ class TypedMatrix(T, int CH=1): Matrix
 	/***************************************************************************
 	 * 添え字演算子
 	 */
-	T opIndex(size_t i, size_t j)
+	final T opIndex(size_t i, size_t j)
 	{
-		return super.row!(T)(i)[j];
+		return row(i)[j];
 	}
 	
 	
 	///ditto
-	void opIndexAssign(T val, size_t i, size_t j)
+	final void opIndexAssign(T val, size_t i, size_t j)
 	{
-		return super.row!(T)(i)[j] = val;
+		row(i)[j] = val;
 	}
 }
 
@@ -841,7 +841,7 @@ class UserDataMatrix: Matrix
 	 */
 	alias Matrix.data data;
 	/// ditto
-	final void data(void[] newdata)
+	final @property void data(void[] newdata)
 	in
 	{
 		assert(data.length == step * rows);
@@ -868,7 +868,7 @@ class UserDataTypedMatrix(T): TypedMatrix!(T)
 	 */
 	alias TypedMatrix!(T).data data;
 	/// ditto
-	final void data(T[] data)
+	final @property void data(T[] data)
 	{
 		cvSetData(data.ptr);
 	}
