@@ -439,14 +439,14 @@ public:
 	 */
 	final double white()
 	{
-		return property(CV_CAP_PROP_WHITE_BALANCE);
+		return property(CV_CAP_PROP_WHITE_BALANCE_RED_V);
 	}
 	
 	
 	///ditto
 	final void white(double value)
 	{
-		property(CV_CAP_PROP_WHITE_BALANCE, value);
+		property(CV_CAP_PROP_WHITE_BALANCE_RED_V, value);
 	}
 	
 	

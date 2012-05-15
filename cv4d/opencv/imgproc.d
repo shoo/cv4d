@@ -1,4 +1,4 @@
-﻿module cv4d.opencv.imgproc;
+module cv4d.opencv.imgproc;
 
 //##############################################################################
 //##### opencv2/imgproc/type_c.h
@@ -73,13 +73,6 @@ enum
 enum
 {
 	CV_GAUSSIAN_5x5 = 7
-}
-
-/* Inpainting algorithms */
-enum
-{
-	CV_INPAINT_NS      =0,
-	CV_INPAINT_TELEA   =1
 }
 
 /* Special filters */
@@ -219,7 +212,100 @@ enum
 	CV_YUV2BGR      = 84,
 	CV_YUV2RGB      = 85,
 	
-	CV_COLORCVT_MAX  =100
+	CV_BayerBG2GRAY = 86,
+	CV_BayerGB2GRAY = 87,
+	CV_BayerRG2GRAY = 88,
+	CV_BayerGR2GRAY = 89,
+
+	//YUV 4:2:0 formats family
+	CV_YUV2RGB_NV12 = 90,
+	CV_YUV2BGR_NV12 = 91,    
+	CV_YUV2RGB_NV21 = 92,
+	CV_YUV2BGR_NV21 = 93,
+	CV_YUV420sp2RGB = CV_YUV2RGB_NV21,
+	CV_YUV420sp2BGR = CV_YUV2BGR_NV21,
+
+	CV_YUV2RGBA_NV12 = 94,
+	CV_YUV2BGRA_NV12 = 95,
+	CV_YUV2RGBA_NV21 = 96,
+	CV_YUV2BGRA_NV21 = 97,
+	CV_YUV420sp2RGBA = CV_YUV2RGBA_NV21,
+	CV_YUV420sp2BGRA = CV_YUV2BGRA_NV21,
+	
+	CV_YUV2RGB_YV12 = 98,
+	CV_YUV2BGR_YV12 = 99,
+	CV_YUV2RGB_IYUV = 100,
+	CV_YUV2BGR_IYUV = 101,
+	CV_YUV2RGB_I420 = CV_YUV2RGB_IYUV,
+	CV_YUV2BGR_I420 = CV_YUV2BGR_IYUV,
+	CV_YUV420p2RGB = CV_YUV2RGB_YV12,
+	CV_YUV420p2BGR = CV_YUV2BGR_YV12,
+	
+	CV_YUV2RGBA_YV12 = 102,
+	CV_YUV2BGRA_YV12 = 103,
+	CV_YUV2RGBA_IYUV = 104,
+	CV_YUV2BGRA_IYUV = 105,
+	CV_YUV2RGBA_I420 = CV_YUV2RGBA_IYUV,
+	CV_YUV2BGRA_I420 = CV_YUV2BGRA_IYUV,
+	CV_YUV420p2RGBA = CV_YUV2RGBA_YV12,
+	CV_YUV420p2BGRA = CV_YUV2BGRA_YV12,
+	
+	CV_YUV2GRAY_420 = 106,
+	CV_YUV2GRAY_NV21 = CV_YUV2GRAY_420,
+	CV_YUV2GRAY_NV12 = CV_YUV2GRAY_420,
+	CV_YUV2GRAY_YV12 = CV_YUV2GRAY_420,
+	CV_YUV2GRAY_IYUV = CV_YUV2GRAY_420,
+	CV_YUV2GRAY_I420 = CV_YUV2GRAY_420,
+	CV_YUV420sp2GRAY = CV_YUV2GRAY_420,
+	CV_YUV420p2GRAY = CV_YUV2GRAY_420,
+	
+	//YUV 4:2:2 formats family
+	CV_YUV2RGB_UYVY = 107,
+	CV_YUV2BGR_UYVY = 108,
+	//CV_YUV2RGB_VYUY = 109,
+	//CV_YUV2BGR_VYUY = 110,
+	CV_YUV2RGB_Y422 = CV_YUV2RGB_UYVY,
+	CV_YUV2BGR_Y422 = CV_YUV2BGR_UYVY,
+	CV_YUV2RGB_UYNV = CV_YUV2RGB_UYVY,
+	CV_YUV2BGR_UYNV = CV_YUV2BGR_UYVY,
+	
+	CV_YUV2RGBA_UYVY = 111,
+	CV_YUV2BGRA_UYVY = 112,
+	//CV_YUV2RGBA_VYUY = 113,
+	//CV_YUV2BGRA_VYUY = 114,
+	CV_YUV2RGBA_Y422 = CV_YUV2RGBA_UYVY,
+	CV_YUV2BGRA_Y422 = CV_YUV2BGRA_UYVY,
+	CV_YUV2RGBA_UYNV = CV_YUV2RGBA_UYVY,
+	CV_YUV2BGRA_UYNV = CV_YUV2BGRA_UYVY,
+	
+	CV_YUV2RGB_YUY2 = 115,
+	CV_YUV2BGR_YUY2 = 116,
+	CV_YUV2RGB_YVYU = 117,
+	CV_YUV2BGR_YVYU = 118,
+	CV_YUV2RGB_YUYV = CV_YUV2RGB_YUY2,
+	CV_YUV2BGR_YUYV = CV_YUV2BGR_YUY2,
+	CV_YUV2RGB_YUNV = CV_YUV2RGB_YUY2,
+	CV_YUV2BGR_YUNV = CV_YUV2BGR_YUY2,
+	
+	CV_YUV2RGBA_YUY2 = 119,
+	CV_YUV2BGRA_YUY2 = 120,
+	CV_YUV2RGBA_YVYU = 121,
+	CV_YUV2BGRA_YVYU = 122,
+	CV_YUV2RGBA_YUYV = CV_YUV2RGBA_YUY2,
+	CV_YUV2BGRA_YUYV = CV_YUV2BGRA_YUY2,
+	CV_YUV2RGBA_YUNV = CV_YUV2RGBA_YUY2,
+	CV_YUV2BGRA_YUNV = CV_YUV2BGRA_YUY2,
+	
+	CV_YUV2GRAY_UYVY = 123,
+	CV_YUV2GRAY_YUY2 = 124,
+	//CV_YUV2GRAY_VYUY = CV_YUV2GRAY_UYVY,
+	CV_YUV2GRAY_Y422 = CV_YUV2GRAY_UYVY,
+	CV_YUV2GRAY_UYNV = CV_YUV2GRAY_UYVY,
+	CV_YUV2GRAY_YVYU = CV_YUV2GRAY_YUY2,
+	CV_YUV2GRAY_YUYV = CV_YUV2GRAY_YUY2,
+	CV_YUV2GRAY_YUNV = CV_YUV2GRAY_YUY2,
+	
+	CV_COLORCVT_MAX  = 125
 }
 
 
@@ -294,7 +380,8 @@ enum
 	CV_RETR_EXTERNAL=0,
 	CV_RETR_LIST=1,
 	CV_RETR_CCOMP=2,
-	CV_RETR_TREE=3
+    CV_RETR_TREE=3,
+    CV_RETR_FLOODFILL=4
 }
 
 /* Contour approximation methods */
@@ -460,6 +547,13 @@ enum
 	CV_DIST_MASK_5   =5,
 	CV_DIST_MASK_PRECISE =0
 }
+
+/* Content of output label array: connected components or pixels */
+enum
+{
+	CV_DIST_LABEL_CCOMP = 0,
+	CV_DIST_LABEL_PIXEL = 1
+};
 
 /* Distance types for Distance Transform and M-estimators */
 enum
@@ -646,15 +740,6 @@ CvMat** cvCreatePyramid( const CvArr* img, int extra_layers, double rate,
 void cvReleasePyramid( CvMat*** pyramid, int extra_layers );
 
 
-/* Splits color or grayscale image into multiple connected components
-   of nearly the same color/brightness using modification of Burt algorithm.
-   comp with contain a pointer to sequence (CvSeq)
-   of connected components (CvConnectedComp) */
-void cvPyrSegmentation( IplImage* src, IplImage* dst,
-                        CvMemStorage* storage, CvSeq** comp,
-                        int level, double threshold1,
-                        double threshold2 );
-
 /* Filters image using meanshift algorithm */
 void cvPyrMeanShiftFiltering( const CvArr* src, CvArr* dst,
                               double sp, double sr, int max_level = 1,
@@ -663,10 +748,6 @@ void cvPyrMeanShiftFiltering( const CvArr* src, CvArr* dst,
 
 /* Segments image using seed "markers" */
 void cvWatershed( const CvArr* image, CvArr* markers );
-
-/* Inpaints the selected region in the image */
-void cvInpaint( const CvArr* src, const CvArr* inpaint_mask,
-                CvArr* dst, double inpaintRange, int flags );
 
 /* Calculates an image derivative using generalized Sobel
    (aperture_size = 1,3,5,7) or Scharr (aperture_size = -1) operator.
@@ -881,100 +962,6 @@ void cvStartReadChainPoints( CvChain* chain, CvChainPtReader* reader );
 /* Retrieves the next chain point */
 CvPoint cvReadChainPoint( CvChainPtReader* reader );
 
-/****************************************************************************************\
-*                              Planar subdivisions                                       *
-\****************************************************************************************/
-
-/* Initializes Delaunay triangulation */
-void cvInitSubdivDelaunay2D( CvSubdiv2D* subdiv, CvRect rect );
-
-/* Creates new subdivision */
-CvSubdiv2D* cvCreateSubdiv2D( int subdiv_type, int header_size,
-                              int vtx_size, int quadedge_size,
-                              CvMemStorage* storage );
-
-/************************* high-level subdivision functions ***************************/
-
-/* Simplified Delaunay diagram creation */
-CvSubdiv2D* cvCreateSubdivDelaunay2D( CvRect rect, CvMemStorage* storage )
-{
-	CvSubdiv2D* subdiv = cvCreateSubdiv2D( CV_SEQ_KIND_SUBDIV2D, (CvSubdiv2D*).sizeof,
-	                     CvSubdiv2DPoint.sizeof, CvQuadEdge2D.sizeof, storage );
-
-	cvInitSubdivDelaunay2D( subdiv, rect );
-	return subdiv;
-}
-
-
-/* Inserts new point to the Delaunay triangulation */
-CvSubdiv2DPoint* cvSubdivDelaunay2DInsert( CvSubdiv2D* subdiv, CvPoint2D32f pt);
-
-/* Locates a point within the Delaunay triangulation (finds the edge
-   the point is left to or belongs to, or the triangulation point the given
-   point coinsides with */
-CvSubdiv2DPointLocation cvSubdiv2DLocate(
-                           CvSubdiv2D* subdiv, CvPoint2D32f pt,
-                           CvSubdiv2DEdge* edge,
-                           CvSubdiv2DPoint** vertex = null );
-
-/* Calculates Voronoi tesselation (i.e. coordinates of Voronoi points) */
-void cvCalcSubdivVoronoi2D( CvSubdiv2D* subdiv );
-
-
-/* Removes all Voronoi points from the tesselation */
-void cvClearSubdivVoronoi2D( CvSubdiv2D* subdiv );
-
-
-/* Finds the nearest to the given point vertex in subdivision. */
-CvSubdiv2DPoint* cvFindNearestPoint2D( CvSubdiv2D* subdiv, CvPoint2D32f pt );
-
-
-/************ Basic quad-edge navigation and operations ************/
-
-CvSubdiv2DEdge cvSubdiv2DNextEdge( CvSubdiv2DEdge edge )
-{
-	return  CV_SUBDIV2D_NEXT_EDGE(edge);
-}
-
-
-CvSubdiv2DEdge cvSubdiv2DRotateEdge( CvSubdiv2DEdge edge, int rotate )
-{
-	return  (edge & ~3) + ((edge + rotate) & 3);
-}
-
-CvSubdiv2DEdge cvSubdiv2DSymEdge( CvSubdiv2DEdge edge )
-{
-	return edge ^ 2;
-}
-
-CvSubdiv2DEdge cvSubdiv2DGetEdge( CvSubdiv2DEdge edge, CvNextEdgeType type )
-{
-	CvQuadEdge2D* e = cast(CvQuadEdge2D*)(edge & ~3);
-	edge = e.next[(edge + cast(int)type) & 3];
-	return  (edge & ~3) + ((edge + (cast(int)type >> 4)) & 3);
-}
-
-
-CvSubdiv2DPoint* cvSubdiv2DEdgeOrg( CvSubdiv2DEdge edge )
-{
-	CvQuadEdge2D* e = cast(CvQuadEdge2D*)(edge & ~3);
-	return cast(CvSubdiv2DPoint*)e.pt[edge & 3];
-}
-
-
-CvSubdiv2DPoint* cvSubdiv2DEdgeDst( CvSubdiv2DEdge edge )
-{
-	CvQuadEdge2D* e = cast(CvQuadEdge2D*)(edge & ~3);
-	return cast(CvSubdiv2DPoint*)e.pt[(edge + 2) & 3];
-}
-
-
-double cvTriangleArea( CvPoint2D32f a, CvPoint2D32f b, CvPoint2D32f c )
-{
-	return (cast(double)b.x - a.x) * (cast(double)c.y - a.y)
-		- (cast(double)b.y - a.y) * (cast(double)c.x - a.x);
-}
-
 
 /****************************************************************************************\
 *                            Contour Processing and Shape Analysis                       *
@@ -1157,7 +1144,8 @@ void cvDistTransform( const CvArr* src, CvArr* dst,
                       int distance_type = CV_DIST_L2,
                       int mask_size = 3,
                       const float* mask = null,
-                      CvArr* labels = null);
+                      CvArr* labels = null,
+                      int labelType = CV_DIST_LABEL_CCOMP);
 
 
 /* Applies fixed-level threshold to grayscale image.
@@ -1253,59 +1241,4 @@ CvSeq* cvHoughCircles( CvArr* image, void* circle_storage,
 /* Fits a line into set of 2d or 3d points in a robust way (M-estimator technique) */
 void cvFitLine( const CvArr* points, int dist_type, double param,
                 double reps, double aeps, float* line );
-
-
-/* Constructs kd-tree from set of feature descriptors */
-CvFeatureTree* cvCreateKDTree(CvMat* desc);
-
-/* Constructs spill-tree from set of feature descriptors */
-CvFeatureTree* cvCreateSpillTree( const CvMat* raw_data,
-                                  const int naive = 50,
-                                  const double rho = 0.7,
-                                  const double tau = 0.1 );
-
-/* Release feature tree */
-void cvReleaseFeatureTree(CvFeatureTree* tr);
-
-/* Searches feature tree for k nearest neighbors of given reference points,
-   searching (in case of kd-tree/bbf) at most emax leaves. */
-void cvFindFeatures(CvFeatureTree* tr, const CvMat* query_points,
-                    CvMat* indices, CvMat* dist, int k, int emax = 20);
-
-/* Search feature tree for all points that are inlier to given rect region.
-   Only implemented for kd trees */
-int cvFindFeaturesBoxed(CvFeatureTree* tr,
-                        CvMat* bounds_min, CvMat* bounds_max,
-                        CvMat* out_indices);
-
-
-/* Construct a Locality Sensitive Hash (LSH) table, for indexing d-dimensional vectors of
-   given type. Vectors will be hashed L times with k-dimensional p-stable (p=2) functions. */
-CvLSH* cvCreateLSH(CvLSHOperations* ops, int d,
-                   int L = 10, int k = 10,
-                   int type = CV_64FC1, double r = 4,
-                   long seed = -1);
-
-/* Construct in-memory LSH table, with n bins. */
-CvLSH* cvCreateMemoryLSH(int d, int n, int L = 10, int k = 10,
-                         int type = CV_64FC1, double r = 4,
-                         long seed = -1);
-
-/* Free the given LSH structure. */
-void cvReleaseLSH(CvLSH** lsh);
-
-/* Return the number of vectors in the LSH. */
-uint LSHSize(CvLSH* lsh);
-
-/* Add vectors to the LSH structure, optionally returning indices. */
-void cvLSHAdd(CvLSH* lsh, const CvMat* data, CvMat* indices = null);
-
-/* Remove vectors from LSH, as addressed by given indices. */
-void cvLSHRemove(CvLSH* lsh, const CvMat* indices);
-
-/* Query the LSH n times for at most k nearest points; data is n x d,
-   indices and dist are n x k. At most emax stored points will be accessed. */
-void cvLSHQuery(CvLSH* lsh, const CvMat* query_points,
-                CvMat* indices, CvMat* dist, int k, int emax);
-
 

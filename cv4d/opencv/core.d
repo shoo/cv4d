@@ -1,4 +1,4 @@
-﻿module cv4d.opencv.core;
+module cv4d.opencv.core;
 
 //##############################################################################
 //##### opencv2/core/type_c.h
@@ -48,6 +48,12 @@
 
 static import std.math, std.algorithm;
 extern (C):
+
+/* CvArr* is used to pass arbitrary
+ * array-like data structures
+ * into functions where the particular
+ * array type is recognized at runtime:
+ */
 alias void CvArr;
 
 union Cv32suf
@@ -116,8 +122,9 @@ enum
 	CV_StsBadMemBlock=            -214, /* an allocated block has been corrupted */
 	CV_StsAssert=                 -215, /* assertion failed */    
 	CV_GpuNotSupported=           -216,  
-	CV_GpuApiCallError=           -217, 
-	CV_GpuNppCallError=           -218  
+	CV_GpuApiCallError=           -217,
+	CV_OpenGlNotSupported=        -218,
+	CV_OpenGlApiCallError=        -219
 };
 
 /****************************************************************************************\
@@ -153,6 +160,8 @@ alias std.math.isInfinity cvIsInf;
 /*************** Random number generation *******************/
 alias ulong CvRNG;
 
+
+enum CV_RNG_COEFF = 4164903690U;
 CvRNG cvRNG(long seed=-1)
 {
 	CvRNG rng = seed ? cast(ulong)seed : cast(ulong)-1;
@@ -163,7 +172,7 @@ CvRNG cvRNG(long seed=-1)
 uint cvRandInt( CvRNG* rng )
 {
 	ulong temp = *rng;
-	temp = cast(ulong)cast(uint)temp*4164903690U + (temp >> 32);
+	temp = cast(ulong)cast(uint)temp*CV_RNG_COEFF + (temp >> 32);
 	*rng = temp;
 	return cast(uint)temp;
 }
@@ -615,7 +624,7 @@ enum CV_MATND_MAGIC_VAL   = 0x42430000;
 enum CV_TYPE_NAME_MATND   = "opencv-nd-matrix";
 
 enum CV_MAX_DIM           = 32;
-enum CV_MAX_DIM_HEAP      = 1 << 16;
+enum CV_MAX_DIM_HEAP      = 1024;
 
 struct CvMatND
 {
@@ -2625,8 +2634,8 @@ CvString cvMemStorageAllocString( CvMemStorage* storage, const char* ptr,
                                   int len = -1 );
 
 /* Creates new empty sequence that will reside in the specified storage */
-CvSeq* cvCreateSeq( int seq_flags, int header_size,
-                    int elem_size, CvMemStorage* storage );
+CvSeq* cvCreateSeq( int seq_flags, size_t header_size,
+                    size_t elem_size, CvMemStorage* storage );
 
 /* Changes default size (granularity) of sequence blocks.
    The default size is ~1Kbyte */
@@ -3220,9 +3229,8 @@ void cvSetIPLAllocators( Cv_iplCreateImageHeader create_header,
 /********************************** High-level functions ********************************/
 
 /* opens existing or creates new file storage */
-CvFileStorage* cvOpenFileStorage( const char* filename,
-                                  CvMemStorage* memstorage,
-                                  int flags );
+CvFileStorage* cvOpenFileStorage( const char* filename, CvMemStorage* memstorage,
+                                  int flags, const char* encoding = null);
 
 /* closes file storage and deallocates buffers */
 void cvReleaseFileStorage( CvFileStorage** fs );
