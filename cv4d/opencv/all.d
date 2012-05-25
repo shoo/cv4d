@@ -17,4 +17,5 @@ public:
 import cv4d.opencv.core;
 import cv4d.opencv.imgproc;
 import cv4d.opencv.highgui;
+import cv4d.opencv.calib3d;
 
