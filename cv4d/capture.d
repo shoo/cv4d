@@ -174,14 +174,14 @@ public:
 	 * ビデオファイル中の現在の位置[ms]
 	 * あるいはビデオキャプチャのタイムスタンプ値
 	 */
-	final double posMsec()
+	final @property double posMsec()
 	{
 		return property(CV_CAP_PROP_POS_MSEC);
 	}
 	
 	
 	///ditto
-	final void posMsec(double value)
+	final @property void posMsec(double value)
 	{
 		property(CV_CAP_PROP_POS_MSEC, value);
 	}
@@ -193,14 +193,14 @@ public:
 	 * @property setter/getter
 	 * 0から始まる
 	 */
-	final double posFrames()
+	final @property double posFrames()
 	{
 		return property(CV_CAP_PROP_POS_FRAMES);
 	}
 	
 	
 	///ditto
-	final void posFrames(double value)
+	final @property void posFrames(double value)
 	{
 		property(CV_CAP_PROP_POS_FRAMES, value);
 	}
@@ -214,14 +214,14 @@ public:
 	 * 1 - ファイルの終了位置
 	 * setterの場合ビデオファイルのみ
 	 */
-	final double aviRatio()
+	final @property double aviRatio()
 	{
 		return property(CV_CAP_PROP_POS_AVI_RATIO);
 	}
 	
 	
 	///ditto
-	final void aviRatio(double value)
+	final @property void aviRatio(double value)
 	{
 		property(CV_CAP_PROP_POS_AVI_RATIO, value);
 	}
@@ -233,14 +233,14 @@ public:
 	 * @property setter/getter
 	 * setterの場合カメラのみ
 	 */
-	final double width()
+	final @property double width()
 	{
 		return property(CV_CAP_PROP_FRAME_WIDTH);
 	}
 	
 	
 	///ditto
-	final void width(double value)
+	final @property void width(double value)
 	{
 		property(CV_CAP_PROP_FRAME_WIDTH, value);
 	}
@@ -252,14 +252,14 @@ public:
 	 * @property setter/getter
 	 * setterの場合カメラのみ
 	 */
-	final double height()
+	final @property double height()
 	{
 		return property(CV_CAP_PROP_FRAME_HEIGHT);
 	}
 	
 	
 	///ditto
-	final void height(double value)
+	final @property void height(double value)
 	{
 		property(CV_CAP_PROP_FRAME_HEIGHT, value);
 	}
@@ -268,14 +268,14 @@ public:
 	/***************************************************************************
 	 * サイズ
 	 */
-	final CvSize size()
+	final @property CvSize size()
 	{
 		return cvSize(cast(int)width, cast(int)height);
 	}
 	
 	
 	///ditto
-	final void size(CvSize sz)
+	final @property void size(CvSize sz)
 	{
 		width = cast(double)sz.width;
 		height = cast(double)sz.height;
@@ -287,14 +287,14 @@ public:
 	 * @property setter/getter
 	 * setterの場合カメラのみ
 	 */
-	final double fps()
+	final @property double fps()
 	{
 		return property(CV_CAP_PROP_FPS);
 	}
 	
 	
 	///ditto
-	final void fps(double value)
+	final @property void fps(double value)
 	{
 		property(CV_CAP_PROP_FPS, value);
 	}
@@ -306,14 +306,14 @@ public:
 	 * @property setter/getter
 	 * setterの場合カメラのみ
 	 */
-	final double fourcc()
+	final @property double fourcc()
 	{
 		return property(CV_CAP_PROP_FOURCC);
 	}
 	
 	
 	///ditto
-	final void fourcc(double value)
+	final @property void fourcc(double value)
 	{
 		property(CV_CAP_PROP_FOURCC, value);
 	}
@@ -325,14 +325,14 @@ public:
 	 * @property setter/getter
 	 * ビデオのみ
 	 */
-	final double frameCount()
+	final @property double frameCount()
 	{
 		return property(CV_CAP_PROP_FRAME_COUNT);
 	}
 	
 	
 	///ditto
-	final void frameCount(double value)
+	final @property void frameCount(double value)
 	{
 		property(CV_CAP_PROP_FRAME_COUNT, value);
 	}
@@ -341,14 +341,14 @@ public:
 	/***************************************************************************
 	 * 明度
 	 */
-	final double brightness()
+	final @property double brightness()
 	{
 		return property(CV_CAP_PROP_BRIGHTNESS);
 	}
 	
 	
 	///ditto
-	final void brightness(double value)
+	final @property void brightness(double value)
 	{
 		property(CV_CAP_PROP_BRIGHTNESS, value);
 	}
@@ -357,14 +357,14 @@ public:
 	/***************************************************************************
 	 * コントラスト
 	 */
-	final double contrast()
+	final @property double contrast()
 	{
 		return property(CV_CAP_PROP_CONTRAST);
 	}
 	
 	
 	///ditto
-	final void contrast(double value)
+	final @property void contrast(double value)
 	{
 		property(CV_CAP_PROP_CONTRAST, value);
 	}
@@ -373,14 +373,14 @@ public:
 	/***************************************************************************
 	 * 彩度
 	 */
-	final double saturation()
+	final @property double saturation()
 	{
 		return property(CV_CAP_PROP_SATURATION);
 	}
 	
 	
 	///ditto
-	final void saturation(double value)
+	final @property void saturation(double value)
 	{
 		property(CV_CAP_PROP_SATURATION, value);
 	}
@@ -389,14 +389,14 @@ public:
 	/***************************************************************************
 	 * 色相
 	 */
-	final double hue()
+	final @property double hue()
 	{
 		return property(CV_CAP_PROP_HUE);
 	}
 	
 	
 	///ditto
-	final void hue(double value)
+	final @property void hue(double value)
 	{
 		property(CV_CAP_PROP_HUE, value);
 	}
@@ -405,14 +405,14 @@ public:
 	/***************************************************************************
 	 * ゲイン
 	 */
-	final double gain()
+	final @property double gain()
 	{
 		return property(CV_CAP_PROP_GAIN);
 	}
 	
 	
 	///ditto
-	final void gain(double value)
+	final @property void gain(double value)
 	{
 		property(CV_CAP_PROP_GAIN, value);
 	}
@@ -421,14 +421,14 @@ public:
 	/***************************************************************************
 	 * モード
 	 */
-	final double mode()
+	final @property double mode()
 	{
 		return property(CV_CAP_PROP_MODE);
 	}
 	
 	
 	///ditto
-	final void mode(double value)
+	final @property void mode(double value)
 	{
 		property(CV_CAP_PROP_MODE, value);
 	}
@@ -437,14 +437,14 @@ public:
 	/***************************************************************************
 	 * ホワイトバランス
 	 */
-	final double white()
+	final @property double white()
 	{
 		return property(CV_CAP_PROP_WHITE_BALANCE_RED_V);
 	}
 	
 	
 	///ditto
-	final void white(double value)
+	final @property void white(double value)
 	{
 		property(CV_CAP_PROP_WHITE_BALANCE_RED_V, value);
 	}
@@ -453,14 +453,14 @@ public:
 	/***************************************************************************
 	 * 露出
 	 */
-	final double exposure()
+	final @property double exposure()
 	{
 		return property(CV_CAP_PROP_EXPOSURE);
 	}
 	
 	
 	///ditto
-	final void exposure(double value)
+	final @property void exposure(double value)
 	{
 		property(CV_CAP_PROP_EXPOSURE, value);
 	}
@@ -659,7 +659,7 @@ public:
 	/***************************************************************************
 	 * 現在時刻[秒]を設定/取得
 	 */
-	void time(double sec)
+	@property void time(double sec)
 	in
 	{
 		assert(tmNow < sec);
@@ -671,7 +671,7 @@ public:
 	
 	
 	///ditto
-	double time()
+	@property double time()
 	{
 		return tmNow;
 	}
@@ -680,7 +680,7 @@ public:
 	/***************************************************************************
 	 * 最終録画時刻[秒]を設定/取得
 	 */
-	double recTime()
+	@property double recTime()
 	{
 		return tmRec;
 	}
@@ -689,7 +689,7 @@ public:
 	/***************************************************************************
 	 * サイズ
 	 */
-	CvSize size()
+	@property CvSize size()
 	{
 		return image.size;
 	}

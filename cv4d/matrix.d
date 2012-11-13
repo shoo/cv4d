@@ -380,7 +380,7 @@ public:
 	/***************************************************************************
 	 * 1行のバイト数
 	 */
-	final int step() const
+	final @property int step() const
 	{
 		return _matrix.step;
 	}

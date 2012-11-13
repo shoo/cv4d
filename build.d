@@ -106,7 +106,7 @@ int compile(Options opt)
 		if (opt.output)      opts ~= ["-of"~opt.output];
 		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
 		{
-			if (!ss.isDir && ss.extension == ".d") opts ~= ss;
+			if (!ss.isDir() && ss.extension() == ".d") opts ~= ss;
 		}
 		if (opt.lib)         opts ~= ["-version=BUILD_DUMMY", "-run", "build.d"];
 	}
@@ -124,7 +124,7 @@ int compile(Options opt)
 		if (opt.options)  opts ~= opt.options;
 		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
 		{
-			if (!ss.isDir && ss.extension == ".d") opts ~= ss;
+			if (!ss.isDir() && ss.extension() == ".d") opts ~= ss;
 		}
 	}
 	
@@ -154,9 +154,9 @@ int makedoc(Options opt)
 	FileData[] docmods;
 	foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
 	{
-		if (ss.isDir) continue;
-		if (ss.extension != ".d" && ss.extension != ".dd") continue;
-		if (ss.baseName == "index.dd")
+		if (ss.isDir()) continue;
+		if (ss.extension() != ".d" && ss.extension() != ".dd") continue;
+		if (ss.baseName() == "index.dd")
 		{
 			docmods ~= FileData(ss, "index");
 			modules ~= "	$(MODULE_FULL index)\n";
@@ -173,7 +173,7 @@ int makedoc(Options opt)
 			{
 				if (c == '/') c = '.';
 			}
-			string modname = cast(immutable)baseName(tmp, tmp.extension);
+			string modname = cast(immutable)baseName(tmp, tmp.extension());
 			modules ~= "	$(MODULE_FULL " ~ modname ~ ")\n";
 			docmods ~= FileData(ss, modname);
 		}

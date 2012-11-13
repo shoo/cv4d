@@ -714,7 +714,7 @@ public:
 				{
 					if (resetroi)
 					{
-						resetRoi;
+						resetRoi();
 					}
 					else
 					{
@@ -748,7 +748,7 @@ public:
 				{
 					if (resetroi)
 					{
-						resetRoi;
+						resetRoi();
 					}
 					else
 					{
@@ -1591,7 +1591,7 @@ protected:
 public:
 	
 	
-	CvHistogram* handle()
+	@property CvHistogram* handle()
 	{
 		return m_Histogram;
 	}
@@ -1600,7 +1600,7 @@ public:
 	/***************************************************************************
 	 * ビンに直接アクセス
 	 */
-	CvArr* bins()
+	@property CvArr* bins()
 	{
 		return m_Histogram.bins;
 	}
