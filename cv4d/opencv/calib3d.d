@@ -248,8 +248,6 @@ enum
 	CV_CALIB_RATIONAL_MODEL      = 16384
 }
 
-private import core.stdc.float_;
-
 /* Finds intrinsic and extrinsic camera parameters
    from a few views of known calibration pattern */
 double cvCalibrateCamera2( const CvMat* object_points,
@@ -262,7 +260,7 @@ double cvCalibrateCamera2( const CvMat* object_points,
                            CvMat* translation_vectors = null,
                            int flags = 0,
                            CvTermCriteria term_crit = cvTermCriteria(
-                               CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 30, DBL_EPSILON) );
+                               CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 30, double.epsilon) );
 
 /* Computes various useful characteristics of the camera from the data computed by
    cvCalibrateCamera2 */
