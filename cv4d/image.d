@@ -415,7 +415,7 @@ public:
 	/***************************************************************************
 	 * BitmapInformationHeaderを生成
 	 */
-	void makeBitmapInfo(out BitmapInformationHeader bmi)
+	void makeBitmapInfo(out BitmapInformationHeader bmi) const
 	{
 		static int ABS(int a){return a<0?-a:a;}
 		bmi.width = width;
