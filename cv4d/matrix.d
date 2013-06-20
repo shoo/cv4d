@@ -3,7 +3,7 @@
  */
 module cv4d.matrix;
 
-import cv4d.opencv.all;
+import cv4d.opencv;
 import cv4d.exception, cv4d._internal.misc;
 
 private void error(string msg, string file = __FILE__, size_t line = __LINE__) pure
@@ -521,6 +521,21 @@ public:
 		mat += m;
 		return mat;
 	}
+	
+	
+	//##########################################################################
+	//##### 
+	//##### 標準化対応
+	//##### 
+	//##########################################################################
+	/// for swap
+	void proxySwap(Matrix m)
+	{
+		auto tmp = m._matrix;
+		_matrix = m._matrix;
+		m._matrix = tmp;
+	}
+	
 }
 
 /*******************************************************************************

@@ -303,7 +303,7 @@ function TreeNode(text, iconSrc, hrefMode)
         }
         else if (mode == hlSelected)
         {
-            this.textSpan.style.backgroundColor = "3399cc";
+            this.textSpan.style.backgroundColor = "cc4033";
             this.textSpan.style.color = "white";
             this.textSpan.style.border = "dotted 1px red";
         }

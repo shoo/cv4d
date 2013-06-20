@@ -80,16 +80,18 @@ function Marker()
 ///////////////////////////////////////////////////////////////////////////////
 function Outline()
 {
-    this.tree           = new TreeView();
-    this.mountPoint     = null;    
-    this.writeEnabled   = false;
-    this.marker         = new Marker();        
-    this.classRegExp    = new RegExp;
-    this.structRegExp   = new RegExp;
-    this.enumRegExp     = new RegExp;
-    this.templateRegExp = new RegExp;
-    this.aliasRegExp    = new RegExp;
-    this.funcRegExp     = new RegExp;
+    this.tree            = new TreeView();
+    this.mountPoint      = null;    
+    this.writeEnabled    = false;
+    this.marker          = new Marker();        
+    this.classRegExp     = new RegExp;
+    this.structRegExp    = new RegExp;
+    this.unionRegExp     = new RegExp;
+    this.interfaceRegExp = new RegExp;
+    this.enumRegExp      = new RegExp;
+    this.templateRegExp  = new RegExp;
+    this.aliasRegExp     = new RegExp;
+    this.funcRegExp      = new RegExp;
     
     this.incSymbolLevel = function()
     {
@@ -121,15 +123,19 @@ function Outline()
                 var text = n.firstChild.data; // text before declaration
                 
                 if ( this.classRegExp.test(text) )
-                    iconSrc = "candydoc/img/outline/class.gif";
+                    iconSrc = "candydoc/img/outline/class.png";
                 else if ( this.structRegExp.test(text) )
-                    iconSrc = "candydoc/img/outline/struct.gif";
+                    iconSrc = "candydoc/img/outline/struct.png";
+                else if ( this.unionRegExp.test(text) )
+                    iconSrc = "candydoc/img/outline/union.png";
+                else if ( this.interfaceRegExp.test(text) )
+                    iconSrc = "candydoc/img/outline/interface.png";
                 else if ( this.enumRegExp.test(text) )
-                    iconSrc = "candydoc/img/outline/enum.gif";
+                    iconSrc = "candydoc/img/outline/enum.png";
                 else if ( this.templateRegExp.test(text) )
-                    iconSrc = "candydoc/img/outline/template.gif";
+                    iconSrc = "candydoc/img/outline/template.png";
                 else if ( this.aliasRegExp.test(text) )
-                    iconSrc = "candydoc/img/outline/alias.gif";
+                    iconSrc = "candydoc/img/outline/alias.png";
                 else // function or variable? check whether '(' ')' exists on the right
                 {
                     var np = n.firstChild;
@@ -139,14 +145,14 @@ function Outline()
                     if (np && np.nextSibling && np.nextSibling.nodeName == "#text" &&
                         this.funcRegExp.test(np.nextSibling.data))
                     {
-                        iconSrc = "candydoc/img/outline/func.gif";
+                        iconSrc = "candydoc/img/outline/func.png";
                     }
                     else
-                        iconSrc = "candydoc/img/outline/var.gif";
+                        iconSrc = "candydoc/img/outline/var.png";
                 }
             }
             else // enum member ?
-                iconSrc = "candydoc/img/outline/var.gif";
+                iconSrc = "candydoc/img/outline/var.png";
                     
             child.icon.src = iconSrc;
             child.icon.width = 16;
@@ -192,6 +198,8 @@ function Outline()
     
     this.classRegExp.compile("(.*\b)?class(\b.*)?");
     this.structRegExp.compile("(.*\b)?struct(\b.*)?");
+    this.unionRegExp.compile("(.*\b)?union(\b.*)?");
+    this.interfaceRegExp.compile("(.*\b)?interface(\b.*)?");
     this.enumRegExp.compile("(.*\b)?enum(\b.*)?");
     this.templateRegExp.compile("(.*\b)?template(\b.*)?");
     this.aliasRegExp.compile("(.*\b)?alias(\b.*)?");
@@ -208,16 +216,14 @@ function PackageExplorer()
 {
     this.tree = new TreeView(true);    
     
-    this.addModule2 = function(mod, full)
+    this.addModule = function(mod)
     {
-        var moduleIco = "candydoc/img/outline/module.gif";
-        var packageIco = "candydoc/img/outline/package.gif";
-
+        var moduleIco = "candydoc/img/outline/module.png";
+        var packageIco = "candydoc/img/outline/package.png";
         var path = mod.split("\.");
         var node = this.tree.branch(path[0]);
         if ( !node )
             node = this.tree.createBranch(path[0], (path.length == 1) ? moduleIco : packageIco);
-        
         for (var i = 1; i < path.length; ++i)
         {
             var prev = node;
@@ -225,23 +231,8 @@ function PackageExplorer()
             if (!node)
                 node = prev.createChild(path[i], (path.length == i + 1) ? moduleIco : packageIco);
                 
-            if (path.length == i + 1) {
-                if (full)
-                    node.setRef(mod + ".html");
-                else
-                    node.setRef(path[i] + ".html");
-            }
         }
-    }
-    
-    this.addModuleFull = function(mod)
-    {
-        this.addModule2(mod, true);
-    }
-    
-    this.addModule = function(mod)
-    {
-        this.addModule2(mod, false);
+        node.setRef(path.join(".") + ".html");
     }
 }
 
@@ -270,8 +261,11 @@ function Explorer()
         this.clientArea.onclick = new Function("return true;");
         this.clientArea.onselectstart = new Function("return false;");
         
-        this.outline.tree.createBranch( moduleName, "candydoc/img/outline/module.gif" );
-        
+        this.outline.tree.createBranch( moduleName, "candydoc/img/outline/module.png" );
+        function baseName(file_url){
+            file_url = file_url.substring(file_url.lastIndexOf("/")+1,file_url.length)
+            return file_url.substring(0,file_url.indexOf("."));
+        }
         // create tabs
         this.createTab("Outline", this.outline.tree.domEntry);
         this.createTab("Package", this.packageExplorer.tree.domEntry);

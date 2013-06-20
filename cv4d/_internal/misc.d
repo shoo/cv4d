@@ -1,6 +1,6 @@
 ﻿module cv4d._internal.misc;
 
-import cv4d.opencv.all;
+import cv4d.opencv;
 import core.memory;
 static import std.utf, std.uni, std.path, std.string;
 static import core.stdc.stdlib, core.stdc.stddef, core.stdc.locale;

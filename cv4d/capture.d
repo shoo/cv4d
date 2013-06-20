@@ -1,6 +1,6 @@
 ﻿module cv4d.capture;
 
-import cv4d.opencv.all;
+import cv4d.opencv;
 import cv4d.image, cv4d._internal.misc;
 
 /*******************************************************************************
@@ -480,6 +480,21 @@ public:
 		return cvGetCaptureDomain(_capture);
 	}
 	+/
+	
+	
+	//##########################################################################
+	//##### 
+	//##### 標準化対応
+	//##### 
+	//##########################################################################
+	/// for swap
+	void proxySwap(Capture capt)
+	{
+		auto tmp = _capture;
+		_capture = capt._capture;
+		capt._capture = tmp;
+	}
+	
 }
 
 enum FourCC
@@ -596,7 +611,7 @@ enum FourCC
 class Recoder
 {
 protected:
-	CvVideoWriter* m_VideoWriter;
+	CvVideoWriter* _videoWriter;
 public:
 	/***************************************************************************
 	 * コンストラクタ
@@ -605,14 +620,14 @@ public:
 	     double fps = 30.0, FourCC fourcc = FourCC.DEFAULT,
 	     int is_color = 1)
 	{
-		m_VideoWriter = cvCreateVideoWriter(
+		_videoWriter = cvCreateVideoWriter(
 			toMBSz(filename), fourcc, fps, size, is_color);
 	}
 	
 	// デストラクタ
 	~this()
 	{
-		if (m_VideoWriter) cvReleaseVideoWriter(&m_VideoWriter);
+		if (_videoWriter) cvReleaseVideoWriter(&_videoWriter);
 	}
 	
 	
@@ -621,8 +636,23 @@ public:
 	 */
 	void opCall(Image img)
 	{
-		cvWriteFrame(m_VideoWriter, img.handle);
+		cvWriteFrame(_videoWriter, img.handle);
 	}
+	
+	
+	//##########################################################################
+	//##### 
+	//##### 標準化対応
+	//##### 
+	//##########################################################################
+	/// for swap
+	void proxySwap(Recoder rec)
+	{
+		auto tmp = _videoWriter;
+		_videoWriter = rec._videoWriter;
+		rec._videoWriter = tmp;
+	}
+	
 }
 
 /*******************************************************************************
@@ -724,4 +754,24 @@ public:
 		tmNow = tm;
 		opCall(img);
 	}
+	
+	
+	//##########################################################################
+	//##### 
+	//##### 標準化対応
+	//##### 
+	//##########################################################################
+	/// for swap
+	override void proxySwap(Recoder rec)
+	{
+		import std.algorithm: swap;
+		import std.exception: enforce;
+		auto srec = enforce(cast(SmartRecoder)rec);
+		super.proxySwap(rec);
+		swap(tmNow, srec.tmNow);
+		swap(tmRec, srec.tmRec);
+		swap(interval, srec.interval);
+		swap(image, srec.image);
+	}
+	
 }

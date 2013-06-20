@@ -15,11 +15,6 @@ immutable
 import std.exception, std.stdio, std.path, std.process, std.file, std.string,
 	std.array, std.algorithm, std.getopt, std.conv;
 
-version (BUILD_DUMMY)
-{
-	void main(){}
-}
-else:
 void main(string[] args)
 {
 	string[] srcdir;
@@ -40,16 +35,9 @@ void main(string[] args)
 		std.getopt.config.noBundling,
 		"src|s", &srcdir);
 	if (srcdir) opt.src = srcdir;
-	while (!args.empty())
-	{
-		if (args.front() == "--")
-		{
-			args.popFront();
-			break;
-		}
-		args.popFront();
-	}
-	opt.options ~= args[];
+	
+	if (args.length > 1)
+		opt.options ~= args[1..$];
 	
 	int res;
 	if (opt.doc)
@@ -64,7 +52,7 @@ void main(string[] args)
 		{
 			writeln("Begin testing...");
 			stdout.flush();
-			res = system(opt.output);
+			res = wait(spawnProcess(opt.output));
 			writeln("Complete testing!");
 			return;
 		}
@@ -106,15 +94,15 @@ int compile(Options opt)
 		if (opt.output)      opts ~= ["-of"~opt.output];
 		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
 		{
-			if (!ss.isDir() && ss.extension() == ".d") opts ~= ss;
+			if (!ss.isDir && ss.extension() == ".d") opts ~= ss;
 		}
-		if (opt.lib)         opts ~= ["-version=BUILD_DUMMY", "-run", "build.d"];
+		if (opt.lib)         opts ~= ["-main"];
 	}
 	else
 	{
 		if (opt.lib)      opts ~= ["-lib", "-nofloat"];
 		if (opt.dbg)      opts ~= ["-debug", "-g"];
-		if (!opt.dbg)     opts ~= ["-release", "-inline", "-O"];
+		if (!opt.dbg)     opts ~= ["-release", "-inline", "-O", "-noboundscheck"];
 		if (opt.gui)      opts ~= ["-L/exet:nt/su:windows:4.0"];
 		if (opt.output)   opts ~= ["-of"~opt.output];
 		if (opt.obj)      opts ~= ["-od"~opt.obj];
@@ -124,25 +112,25 @@ int compile(Options opt)
 		if (opt.options)  opts ~= opt.options;
 		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
 		{
-			if (!ss.isDir() && ss.extension() == ".d") opts ~= ss;
+			if (!ss.isDir && ss.extension() == ".d") opts ~= ss;
 		}
 	}
 	
 	writeln("dmd " ~ std.string.join(opts, " "));
 	
-	return system("dmd " ~ std.string.join(opts, " "));
+	return wait(spawnProcess(["dmd"] ~ opts));
 }
 
 
 int makedoc(Options opt)
 {
-	string[] opts = ["-D", "-o-", "-c", "-Dddoc",
+	string[] opts = ["-D", "-o-", "-c",
 		"doc/candydoc/modules.ddoc",
 		"doc/candydoc/candy.ddoc"];
 	
 	if (opt.dbg)     opts ~= ["-debug", "-g"];
 	if (opt.warning) opts ~= ["-w"];
-	if (!opt.dbg)    opts ~= ["-release", "-inline", "-O"];
+	if (!opt.dbg)    opts ~= ["-release"];
 	if (opt.options) opts ~= opt.options;
 	
 	string modules = "MODULES =\n";
@@ -154,38 +142,32 @@ int makedoc(Options opt)
 	FileData[] docmods;
 	foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
 	{
-		if (ss.isDir()) continue;
+		if (ss.isDir) continue;
 		if (ss.extension() != ".d" && ss.extension() != ".dd") continue;
-		if (ss.baseName() == "index.dd")
+		char[] tmp = ss.dup;
+		foreach (ref char c; tmp)
 		{
-			docmods ~= FileData(ss, "index");
-			modules ~= "	$(MODULE_FULL index)\n";
+			if (c == '\\') c = '/';
 		}
-		else
+		if (countUntil(tmp, "/_") != -1) continue;
+		foreach (ref char c; tmp)
 		{
-			char[] tmp = ss.dup;
-			foreach (ref char c; tmp)
-			{
-				if (c == '\\') c = '/';
-			}
-			if (countUntil(tmp, "/_") != -1) continue;
-			foreach (ref char c; tmp)
-			{
-				if (c == '/') c = '.';
-			}
-			string modname = cast(immutable)baseName(tmp, tmp.extension());
-			modules ~= "	$(MODULE_FULL " ~ modname ~ ")\n";
-			docmods ~= FileData(ss, modname);
+			if (c == '/') c = '.';
 		}
+		string modname = cast(immutable)stripExtension(tmp);
+		if (modname.endsWith(".package"))
+			modname = modname.chomp(".package");
+		modules ~= "	$(MODULE_FULL " ~ modname ~ ")\n";
+		docmods ~= FileData(ss, modname);
 	}
 	std.file.write("doc/candydoc/modules.ddoc", modules);
 	
 	foreach (fd; docmods)
 	{
-		auto docopt = ["-Df" ~ fd.modname ~ ".html", fd.filename];
+		auto docopt = ["-Df" ~ buildPath("doc", fd.modname ~ ".html"), fd.filename];
 		writeln("dmd " ~ std.string.join(opts ~ docopt, " "));
 		
-		auto res = system("dmd " ~ std.string.join(opts ~ docopt, " "));
+		auto res =  wait(spawnProcess(["dmd"] ~ opts ~ docopt));
 		if (res != 0) return res;
 	}
 	

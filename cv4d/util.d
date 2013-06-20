@@ -1,6 +1,6 @@
 ﻿module cv4d.util;
 
-import cv4d.opencv.all;
+import cv4d.opencv;
 import cv4d.image, cv4d.matrix, cv4d.exception;
 
 

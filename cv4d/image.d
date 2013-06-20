@@ -3,7 +3,7 @@
  */
 module cv4d.image;
 
-import cv4d.opencv.all;
+import cv4d.opencv;
 import cv4d.exception, cv4d.matrix, cv4d._internal.misc;
 
 private void error(string msg, string file = __FILE__, size_t line = __LINE__) pure
@@ -1316,6 +1316,21 @@ public:
 		ret ^= img;
 		return ret;
 	}
+	
+	
+	//##########################################################################
+	//##### 
+	//##### 標準化対応
+	//##### 
+	//##########################################################################
+	/// for swap
+	void proxySwap(Image img)
+	{
+		auto tmp = _image;
+		_image = img._image;
+		img._image = tmp;
+	}
+	
 }
 
 
@@ -1573,12 +1588,12 @@ class Histogram
 protected:
 	
 	
-	CvHistogram* m_Histogram;
+	CvHistogram* _histogram;
 	
 	
 	///invariant()
 	///{
-	///	assert(m_Histogram);
+	///	assert(_histogram);
 	///}
 	
 	
@@ -1593,7 +1608,7 @@ public:
 	
 	@property CvHistogram* handle()
 	{
-		return m_Histogram;
+		return _histogram;
 	}
 	
 	
@@ -1602,7 +1617,7 @@ public:
 	 */
 	@property CvArr* bins()
 	{
-		return m_Histogram.bins;
+		return _histogram.bins;
 	}
 	
 	
@@ -1617,7 +1632,7 @@ public:
 		{
 			rangeptrs[i] = r.dup.ptr;
 		}
-		m_Histogram = cvCreateHist(sizes.length, sizes.dup.ptr, type,
+		_histogram = cvCreateHist(sizes.length, sizes.dup.ptr, type,
 		                           rangeptrs.ptr, uniform);
 	}
 	
@@ -1627,8 +1642,8 @@ public:
 	 */
 	~this()
 	{
-		if (m_Histogram) cvReleaseHist(&m_Histogram);
-		m_Histogram = null;
+		if (_histogram) cvReleaseHist(&_histogram);
+		_histogram = null;
 	}
 	
 	
@@ -1642,7 +1657,7 @@ public:
 		{
 			rangeptrs[i] = r.dup.ptr;
 		}
-		cvSetHistBinRanges(m_Histogram, rangeptrs.ptr, uniform);
+		cvSetHistBinRanges(_histogram, rangeptrs.ptr, uniform);
 	}
 	
 	
@@ -1651,7 +1666,7 @@ public:
 	 */
 	void clear()
 	{
-		cvClearHist(m_Histogram);
+		cvClearHist(_histogram);
 	}
 	
 	
@@ -1660,28 +1675,28 @@ public:
 	 */
 	real queryHistValue1D(int idx0)
 	{
-		return cvGetReal1D( m_Histogram.bins, idx0);
+		return cvGetReal1D( _histogram.bins, idx0);
 	}
 	
 	
 	///ditto
 	real queryValue2D(int idx0, int idx1)
 	{
-		return cvGetReal2D( m_Histogram.bins, idx0, idx1);
+		return cvGetReal2D( _histogram.bins, idx0, idx1);
 	}
 	
 	
 	///ditto
 	real queryValue3D(int idx0, int idx1, int idx2)
 	{
-		return cvGetReal3D( m_Histogram.bins, idx0, idx1, idx2);
+		return cvGetReal3D( _histogram.bins, idx0, idx1, idx2);
 	}
 	
 	
 	///ditto
 	real queryValue(in int[] idx)
 	{
-		return cvGetRealND( m_Histogram.bins, idx.ptr);
+		return cvGetRealND( _histogram.bins, idx.ptr);
 	}
 	
 	
@@ -1690,28 +1705,28 @@ public:
 	 */
 	ubyte* getValue1D(int idx0)
 	{
-		return cvPtr1D( m_Histogram.bins, idx0, null );
+		return cvPtr1D( _histogram.bins, idx0, null );
 	}
 	
 	
 	///ditto
 	ubyte* getValue2D(int idx0, int idx1)
 	{
-		return cvPtr2D( m_Histogram.bins, idx0, idx1, null );
+		return cvPtr2D( _histogram.bins, idx0, idx1, null );
 	}
 	
 	
 	///ditto
 	ubyte* getValue3D(int idx0, int idx1, int idx2)
 	{
-		return cvPtr3D( m_Histogram.bins, idx0, idx1, idx2, null );
+		return cvPtr3D( _histogram.bins, idx0, idx1, idx2, null );
 	}
 	
 	
 	///ditto
 	ubyte* getValue(int[] idx)
 	{
-		return cvPtrND( m_Histogram.bins, idx.ptr );
+		return cvPtrND( _histogram.bins, idx.ptr );
 	}
 	
 	
@@ -1722,7 +1737,7 @@ public:
 	                     int* minIdx=null, int* maxIdx=null )
 	{
 		float min, max;
-		cvGetMinMaxHistValue(m_Histogram, &min, &max, minIdx, maxIdx);
+		cvGetMinMaxHistValue(_histogram, &min, &max, minIdx, maxIdx);
 		minValue = min;
 		maxValue = max;
 	}
@@ -1733,7 +1748,7 @@ public:
 	 */
 	void normalize(double factor)
 	{
-		cvNormalizeHist(m_Histogram, factor);
+		cvNormalizeHist(_histogram, factor);
 	}
 	
 	
@@ -1742,7 +1757,7 @@ public:
 	 */
 	void threshold(double val)
 	{
-		cvThreshHist(m_Histogram, val);
+		cvThreshHist(_histogram, val);
 	}
 	
 	
@@ -1751,7 +1766,7 @@ public:
 	 */
 	real compare(in Histogram h2, int method = CV_COMP_CORREL)
 	{
-		return cvCompareHist(m_Histogram, h2.m_Histogram, method);
+		return cvCompareHist(_histogram, h2._histogram, method);
 	}
 	
 	
@@ -1760,7 +1775,7 @@ public:
 	 */
 	void copy(in Histogram src)
 	{
-		cvCopyHist(src.m_Histogram, &m_Histogram);
+		cvCopyHist(src._histogram, &_histogram);
 	}
 	
 	
@@ -1770,7 +1785,21 @@ public:
 	void calculate(Image img, int accumulate=0, in Image mask=null)
 	{
 		auto src = img.handle;
-		cvCalcHist(&src, m_Histogram, accumulate, mask?mask.handle:null);
+		cvCalcHist(&src, _histogram, accumulate, mask?mask.handle:null);
+	}
+	
+	
+	//##########################################################################
+	//##### 
+	//##### 標準化対応
+	//##### 
+	//##########################################################################
+	/// for swap
+	void proxySwap(Histogram hist)
+	{
+		auto tmp = _histogram;
+		_histogram = hist._histogram;
+		hist._histogram = tmp;
 	}
 }
 
@@ -1779,7 +1808,7 @@ public:
  */
 void calcBackProject(Image img, Image dst, Histogram hist)
 {
-	cvCalcBackProject(&img._image, cast(CvArr*)dst._image, hist.m_Histogram);
+	cvCalcBackProject(&img._image, cast(CvArr*)dst._image, hist._histogram);
 }
 
 /*******************************************************************************
@@ -1789,7 +1818,7 @@ void calcBackProjectPatch(Image img, Image dst, CvSize patchSize,
                           Histogram hist, int method, float factor)
 {
 	cvCalcBackProjectPatch(&img._image, cast(CvArr*)dst._image, patchSize,
-	                       hist.m_Histogram, method, factor);
+	                       hist._histogram, method, factor);
 }
 
 ///

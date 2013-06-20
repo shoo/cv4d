@@ -4,10 +4,12 @@ DDOC =
 <meta content="text/javascript" http-equiv="content-script-type">
 <title>$(TITLE)</title>
 <link rel="stylesheet" type="text/css" href="candydoc/style.css">
+<link rel="stylesheet" type="text/css" href="lightbox/lightbox.css">
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="candydoc/ie56hack.css"><![endif]-->
 <script language="JavaScript" src="candydoc/util.js" type="text/javascript"></script>
 <script language="JavaScript" src="candydoc/tree.js" type="text/javascript"></script>
 <script language="JavaScript" src="candydoc/explorer.js" type="text/javascript"></script>
+<script language="JavaScript" src="lightbox/lightbox_plus.js" type="text/javascript"></script>
 </head><body>
 <div id="tabarea"></div><div id="explorerclient"></div>
 <div id="content"><script>explorer.initialize("$(TITLE)");</script>
@@ -44,8 +46,22 @@ $(DL $0)
 DDOC_PARAM_ID =
 <td nowrap valign="top" style="padding-right: 8px">$0</td>
 
+DDOC_PARAM_ROW   = $(TR $0)
                
 DDOC_PARAM =<span class="funcparam">$0</span>
 ADD_MODULES =<script>$(MODULES)</script>
-MODULE =explorer.packageExplorer.addModule("$0");
-MODULE_FULL =explorer.packageExplorer.addModuleFull("$0");
+MODULE_FULL =explorer.packageExplorer.addModule("$0");
+
+D = <span class="decl">$0</span>
+
+TABLE_CLASS = <table class="$1">$2</table>
+
+図 = $(Fig $0,)
+Fig =
+<div class="fig">
+	<div class="fig_area">
+		<a href="img/$1" rel="lightbox"><img src="img/$($1)" alt="$1" title="$1" class="fig_image" /></a>
+		<span class="fig_title">図「$1」</span>
+		<span class="fig_explain">$2</span>
+	</div>
+</div>

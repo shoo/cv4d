@@ -3,7 +3,7 @@
  */
 module cv4d.exception;
 
-import cv4d.opencv.all;
+import cv4d.opencv;
 import std.windows.charset;
 
 /*******************************************************************************
