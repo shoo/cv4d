@@ -814,36 +814,36 @@ public:
 			if (x < 0)
 			{
 				dxmin = 0;
-				dxmax = x+dw<sw ? (x+dw)*sz : sw*sz;
+				dxmax = x+sw<dw ? (x+sw)*sz : dw*sz;
 				sxmin = -x*sz;
 			}
 			else
 			{
 				dxmin = x*sz;
-				dxmax = dw<sw ? dw*sz : sw*sz;
+				dxmax = x+sw<dw ? (x+sw)*sz : dw*sz;
 				sxmin = 0;
 			}
 			if (dxmax<=0) return;
 			if (y < 0)
 			{
 				dymin = 0;
-				dymax = y+dh<sh ? y+dh : sh;
+				dymax = y+sh<dh ? y+sh : dh;
 				symin = -y;
 			}
 			else
 			{
 				dymin = y;
-				dymax = dh<sh ? dh : sh;
+				dymax = y+sh<dh ? y+sh : dh;
 				symin = 0;
 			}
 			if (dymax<=0)return;
-			if (x+dw < sw)
+			if (x+sw < dw)
 			{
-				sxmax = (x+dw)*sz;
+				sxmax = sw*sz;
 			}
 			else
 			{
-				sxmax = sw*sz;
+				sxmax = (dw-x)*sz;
 			}
 		}
 		for (int dy=dymin, sy=symin; dy<dymax; ++dy, ++sy)
