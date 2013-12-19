@@ -586,10 +586,13 @@ int cvvWaitKey(const char* name) { return cvWaitKey(0); }
 int cvvWaitKeyEx(const char* name, int delay) { return cvWaitKey(delay); }
 alias cvConvertImage cvvConvertImage;
 alias CV_WINDOW_AUTOSIZE HG_AUTOSIZE;
-alias cvSetPreprocessFuncWin32 set_preprocess_func;
-alias cvSetPostprocessFuncWin32 set_postprocess_func;
+version (Windows)
+{
+	alias cvSetPreprocessFuncWin32 set_preprocess_func;
+	alias cvSetPostprocessFuncWin32 set_postprocess_func;
 
-private import core.sys.windows.windows: HWND, UINT, WPARAM, LPARAM;
-alias int function(HWND, UINT, WPARAM, LPARAM, int*) CvWin32WindowCallback;
-void cvSetPreprocessFuncWin32( CvWin32WindowCallback on_preprocess );
-void cvSetPostprocessFuncWin32( CvWin32WindowCallback on_postprocess );
+	private import core.sys.windows.windows: HWND, UINT, WPARAM, LPARAM;
+	alias int function(HWND, UINT, WPARAM, LPARAM, int*) CvWin32WindowCallback;
+	void cvSetPreprocessFuncWin32( CvWin32WindowCallback on_preprocess );
+	void cvSetPostprocessFuncWin32( CvWin32WindowCallback on_postprocess );
+}

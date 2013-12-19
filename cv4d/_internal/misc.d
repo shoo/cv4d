@@ -31,12 +31,14 @@ private
 	{
 		static import core.stdc.limits;
 		alias core.stdc.limits.MB_LEN_MAX MB_LEN_MAX;
-		static import core.stdc.string;
-		alias core.stdc.string.mbstate_t mbstate_t;
-		alias core.stdc.string.wcrtomb wcrtomb;
-		alias core.stdc.string.mbrtowc mbrtowc;
-		alias core.stdc.string.mbsrtowcs mbsrtowcs;
-		alias core.stdc.string.wcsrtombs wcsrtombs;
+		static import core.stdc.wchar_;
+		alias int mbstate_t;
+		alias core.stdc.wchar_.wcrtomb wcrtomb;
+		alias core.stdc.wchar_.mbrtowc mbrtowc;
+		alias core.stdc.wchar_.mbsrtowcs mbsrtowcs;
+		alias core.stdc.wchar_.wcsrtombs wcsrtombs;
+		import core.sync.mutex;
+		import tango.text.convert.Utf;
 		alias tango.text.convert.Utf.toString32 toString32;
 	}
 }
@@ -167,7 +169,7 @@ string fromMBS(in mbchar[] str)
 		auto sz = mbsrtowcs(null, &psrc, 0, &dMbstate);
 		if (sz == cast(size_t)-1) return null;
 		wchar_t* tmp = cast(wchar_t*)GC.malloc((sz+1)*wchar_t.sizeof);
-		sz = mbsrtowcs(cast(char*)tmp, &psrc, sz+1, &dMbstate);
+		sz = mbsrtowcs(tmp, &psrc, sz+1, &dMbstate);
 		if (sz == cast(size_t)-1) return null;
 		tmp[sz] = '\0';
 		return std.utf.toUTF8(cast(immutable(wchar_t)[])tmp[0..sz]);
