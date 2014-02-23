@@ -102,7 +102,7 @@ int compile(Options opt)
 	{
 		if (opt.lib)      opts ~= ["-lib", "-nofloat"];
 		if (opt.dbg)      opts ~= ["-debug", "-g"];
-		if (!opt.dbg)     opts ~= ["-release", "-inline", "-O", "-noboundscheck"];
+		if (!opt.dbg)     opts ~= ["-release", "-inline", "-O"/+, "-noboundscheck"+/];
 		if (opt.gui)      opts ~= ["-L/exet:nt/su:windows:4.0"];
 		if (opt.output)   opts ~= ["-of"~opt.output];
 		if (opt.obj)      opts ~= ["-od"~opt.obj];
