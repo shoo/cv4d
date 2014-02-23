@@ -730,8 +730,9 @@ public:
 	 */
 	override void opCall(Image img)
 	{
-		assert(tmNow <>= 0);
-		if (tmRec !<>= 0)
+		import std.math;
+		assert(!tmNow.isNaN);
+		if (tmRec.isNaN)
 		{
 			tmRec = tmNow;
 		}
