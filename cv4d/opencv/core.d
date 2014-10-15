@@ -1188,7 +1188,7 @@ mixin template CV_CONTOUR_FIELDS()
 	mixin CV_SEQUENCE_FIELDS!();
 	CvRect rect;
 	int color;
-	int reserved[3];
+	int[3] reserved;
 }
 
 struct CvContour

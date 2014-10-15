@@ -78,7 +78,7 @@ void cvDisplayStatusBar(const char* name, const char* text, int delayms = 0);
 
 void cvSaveWindowParameters(const char* name);
 void cvLoadWindowParameters(const char* name);
-int cvStartLoop(int function(int argc, char *argv[]) pt2Func, int argc, char* argv[]);
+int cvStartLoop(int function(int argc, const char*[] argv) pt2Func, int argc, const char*[] argv);
 void cvStopLoop();
 
 alias void function(int state, void* userdata) CvButtonCallback;
