@@ -90,12 +90,12 @@ mbstring toMBS(in char[] srcstr)
 	version (Windows)
 	{
 		auto str = toString16(srcstr);
-		auto srclen = str.length;
+		auto srclen = cast(int)str.length;
 		auto sz = WideCharToMultiByte(0, 0,
-			str.ptr, str.length, null, 0, null, null);
+			str.ptr, srclen, null, 0, null, null);
 		CHAR* tmp = cast(CHAR*)GC.malloc((sz+1)*CHAR.sizeof);
 		auto len = WideCharToMultiByte(0, 0,
-			str.ptr, str.length, tmp, sz+1, null, null);
+			str.ptr, srclen, tmp, sz+1, null, null);
 		tmp[len] = '\0';
 		return cast(mbstring)tmp[0..len];
 	}
@@ -138,10 +138,10 @@ string fromMBS(in mbchar[] str)
 {
 	version (Windows)
 	{
-		auto srclen = str.length;
-		auto sz = MultiByteToWideChar(0, 0, str.ptr, str.length, null, 0);
+		auto srclen = cast(int)str.length;
+		auto sz = MultiByteToWideChar(0, 0, str.ptr, srclen, null, 0);
 		WCHAR* tmp = cast(wchar*)GC.malloc((sz+1)*WCHAR.sizeof);
-		auto len = MultiByteToWideChar(0, 0, str.ptr, str.length, tmp, sz+1);
+		auto len = MultiByteToWideChar(0, 0, str.ptr, srclen, tmp, sz+1);
 		tmp[len] = '\0';
 		return std.utf.toUTF8(cast(wstring)tmp[0..len]);
 	}

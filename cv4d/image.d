@@ -363,7 +363,7 @@ public:
 	this(in void[] imagedata,
 	     int color = CV_LOAD_IMAGE_ANYDEPTH | CV_LOAD_IMAGE_ANYCOLOR)
 	{
-		auto m = cvCreateMatHeader(1, imagedata.length, CV_MAKETYPE(CV_8U,1));
+		auto m = cvCreateMatHeader(1, cast(int)imagedata.length, CV_MAKETYPE(CV_8U,1));
 		scope (exit) cvReleaseMat(&m);
 		cvSetData(m, cast(void*)imagedata.ptr, m.step);
 		_image = cvDecodeImage(m, color);
@@ -1237,35 +1237,35 @@ public:
 	/***************************************************************************
 	 * 代入演算子
 	 */
-	void opOpAssign(string op)(Image img) if (op == "+=")
+	void opOpAssign(string op)(in Image img) if (op == "+")
 	{
 		add(img);
 	}
 	
 	
 	///ditto
-	void opOpAssign(string op)(Image img) if (op == "-=")
+	void opOpAssign(string op)(in Image img) if (op == "-")
 	{
 		sub(img);
 	}
 	
 	
 	///ditto
-	void opOpAssign(string op)(Image img) if (op == "&=")
+	void opOpAssign(string op)(in Image img) if (op == "&")
 	{
 		and(img);
 	}
 	
 	
 	///ditto
-	void opOpAssign(string op)(Image img) if (op == "|=")
+	void opOpAssign(string op)(in Image img) if (op == "|")
 	{
 		or(img);
 	}
 	
 	
 	///ditto
-	void opOpAssign(string op)(Image img) if (op == "^=")
+	void opOpAssign(string op)(in Image img) if (op == "^")
 	{
 		xor(img);
 	}
@@ -1632,7 +1632,7 @@ public:
 		{
 			rangeptrs[i] = r.dup.ptr;
 		}
-		_histogram = cvCreateHist(sizes.length, sizes.dup.ptr, type,
+		_histogram = cvCreateHist(cast(int)sizes.length, sizes.dup.ptr, type,
 		                           rangeptrs.ptr, uniform);
 	}
 	

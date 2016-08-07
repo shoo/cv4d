@@ -15,14 +15,14 @@ class CvException: Exception
 	char[] func = null;
 	
 	
-	this(string msg, string file=__FILE__, int line=__LINE__) pure
+	this(string msg, string file=__FILE__, size_t line=__LINE__) pure
 	{
 		super(msg, file, line, null);
 	}
 	
 	
 	this(string msg, int status, in char[] func,
-	     string file=__FILE__, int line=__LINE__) pure
+	     string file=__FILE__, size_t line=__LINE__) pure
 	{
 		super(msg, file, line);
 	}

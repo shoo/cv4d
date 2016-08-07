@@ -10,6 +10,7 @@ immutable
 	DEFAULT_WARNING  = true,
 	DEFAULT_PROPERTY = false,
 	DEFAULT_OBJDIR   = ".",
+	DEFAULT_M64      = false,
 	DEFAULT_GUI      = false;
 
 import std.exception, std.stdio, std.path, std.process, std.file, std.string,
@@ -30,6 +31,7 @@ void main(string[] args)
 		"gui|g", &opt.gui,
 		"doc|D", &opt.doc,
 		"json|j", &opt.json,
+		"m64", &opt.m64,
 		"warn|w", &opt.warning,
 		"property|prop|p", &opt.property,
 		std.getopt.config.noBundling,
@@ -74,6 +76,7 @@ struct Options
 	bool json     = DEFAULT_JSON;
 	bool warning  = DEFAULT_WARNING;
 	bool property = DEFAULT_PROPERTY;
+	bool m64      = DEFAULT_M64;
 	string[] src  = DEFAULT_SRCDIR;
 	string obj    = DEFAULT_OBJDIR;
 	string output = DEFAULT_OUTPUT;
@@ -90,6 +93,7 @@ int compile(Options opt)
 		opts ~= ["-debug", "-g", "-unittest", "-I."];
 		if (opt.warning)     opts ~= "-w";
 		if (opt.property)    opts ~= "-property";
+		if (opt.m64)         opts ~= "-m64";
 		if (opt.options)     opts ~= opt.options;
 		if (opt.output)      opts ~= ["-of"~opt.output];
 		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
@@ -108,6 +112,7 @@ int compile(Options opt)
 		if (opt.obj)      opts ~= ["-od"~opt.obj];
 		if (opt.warning)  opts ~= ["-w"];
 		if (opt.property) opts ~= ["-property"];
+		if (opt.m64)      opts ~= "-m64";
 		if (opt.json)     opts ~= ["-X", "-Xf"~opt.output];
 		if (opt.options)  opts ~= opt.options;
 		foreach (s; opt.src) foreach (string ss; dirEntries(s, SpanMode.breadth))
