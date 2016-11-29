@@ -199,7 +199,7 @@ public:
 			if( (CV_MAT_CN(m.type) > 1) != (color == 0) )
 			{
 				error("RGB<->Grayscale conversion is not implemented"
-					" for matrices stored in XML/YAML");
+				     ~" for matrices stored in XML/YAML");
 			}
 		}
 		else

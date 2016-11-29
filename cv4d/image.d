@@ -289,7 +289,7 @@ public:
 			if( (img.nChannels > 1) != (color == 0) )
 			{
 				error("RGB<->Grayscale conversion is not "
-				      "implemented for images stored in XML/YAML" );
+				     ~"implemented for images stored in XML/YAML" );
 			}
 		}
 		else
