@@ -4,7 +4,14 @@
 module cv4d.exception;
 
 import cv4d.opencv;
-import std.windows.charset;
+version (Windows)
+{
+	import std.windows.charset;
+}
+else
+{
+	import cv4d._internal.misc;
+}
 
 /*******************************************************************************
  * OpenCVから投げられる例外
@@ -15,14 +22,14 @@ class CvException: Exception
 	char[] func = null;
 	
 	
-	this(string msg, string file=__FILE__, size_t line=__LINE__) pure
+	this(string msg, string file=__FILE__, size_t line=__LINE__) @safe pure nothrow
 	{
 		super(msg, file, line, null);
 	}
 	
 	
 	this(string msg, int status, in char[] func,
-	     string file=__FILE__, size_t line=__LINE__) pure
+	     string file=__FILE__, size_t line=__LINE__) @safe pure nothrow
 	{
 		super(msg, file, line);
 	}
