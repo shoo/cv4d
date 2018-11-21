@@ -423,6 +423,7 @@ public:
 		assert(pixSize * 8 >= 0);
 		assert(pixSize * 8 < 0xffff);
 		bmi.bitCount = (pixSize * 8) & 0xffff;
+		bmi.sizeImage = _image.widthStep*_image.height;
 	}
 	
 	
