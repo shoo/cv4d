@@ -414,10 +414,10 @@ struct CvChainPtReader
 void CV_INIT_3X3_DELTAS(ref byte[8] deltas, byte step, byte nch )
 {
 	deltas[0] = cast(byte)( nch);
-	deltas[1] = cast(byte)(-step + nch);
-	deltas[2] = cast(byte)(-step);
-	deltas[3] = cast(byte)(-step - nch);
-	deltas[4] = cast(byte)(-nch);
+	deltas[1] = cast(byte)(-cast(int)step + nch);
+	deltas[2] = cast(byte)(-cast(int)step);
+	deltas[3] = cast(byte)(-cast(int)step - nch);
+	deltas[4] = cast(byte)(-cast(int)nch);
 	deltas[5] = cast(byte)( step - nch);
 	deltas[6] = cast(byte)( step);
 	deltas[7] = cast(byte)( step + nch);
