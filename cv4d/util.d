@@ -139,6 +139,7 @@ void levelCorrection(Image img, int low=0, int high=255)
 	}
 	body
 {
+	import core.memory;
 	static real divpt(real min, real max, real pt)
 	{
 		auto x =  (1-pt)*min+pt*max;
@@ -206,7 +207,8 @@ void levelCorrection(Image img, int low=0, int high=255)
 	}
 	
 	img.applyLUT(lut);
-	delete lut;
+	destroy(lut);
+	GC.free(cast(void*)lut);
 }
 
 
@@ -271,8 +273,12 @@ void toneCurve(alias curvefunc)(Image img)
  */
 void glowEffect(Image img)
 {
+	import core.memory;
 	auto tmp = new Image(img);
-	scope (exit) delete tmp;
+	scope (exit){
+		destroy(tmp);
+		GC.free(cast(void*)tmp);
+	}
 	levelCorrection(tmp, 224, 256);
 	tmp.smooth(CV_GAUSSIAN, 0, 0, 10, 0);
 	static ubyte brendfunc(int d, int s, int a = 255)
