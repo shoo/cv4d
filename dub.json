@@ -1,0 +1,42 @@
+{
+    "name": "cv4d",
+    "description": "OpenCV for D",
+    "targetType": "library",
+    "license": "BSD 3-clause",
+    "copyright": "Copyright © 2018, SHOO",
+    "homepage": "https://github.com/shoo/cv4d",
+    "importPaths": ["."],
+    "sourcePath": "cv4d",
+    "authors": [ "SHOO" ],
+    "subPackages": [ "opencv" ],
+    "configurations": [
+        {
+            "name": "default"
+        },
+        {
+            "name": "win-dynamic",
+            "subConfigurations": {"cv4d:opencv": "win-dynamic"},
+            "dependencies":      {"cv4d:opencv": { "version": "*", "optional": true } }
+        },
+        {
+            "name": "win-dynamic-dbg",
+            "dependencies":      {"cv4d:opencv": { "version": "*", "optional": true } },
+            "subConfigurations": {"cv4d:opencv": "win-dynamic-dbg"}
+        },
+        {
+            "name": "win-static",
+            "dependencies":      {"cv4d:opencv": { "version": "*", "optional": true } },
+            "subConfigurations": {"cv4d:opencv": "win-static"}
+        },
+        {
+            "name": "win-static-dbg",
+            "dependencies":      {"cv4d:opencv": { "version": "*", "optional": true } },
+            "subConfigurations": {"cv4d:opencv": "win-static-dbg"}
+        },
+        {
+            "name": "win-dynamic-omf",
+            "dependencies":      {"cv4d:opencv": { "version": "*", "optional": true } },
+            "subConfigurations": {"cv4d:opencv": "win-dynamic-omf"}
+        }
+    ]
+}
