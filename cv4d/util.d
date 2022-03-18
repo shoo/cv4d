@@ -131,13 +131,9 @@ auto byPairPixels(Color = ubyte)(Image a, Image b)
  * 最低値から最大値の間のヒストグラムを引きのばします
  */
 void levelCorrection(Image img, int low=0, int high=255)
-	in
-	{
-		assert(img);
-		assert(low < high);
-		assert(high <= 256);
-	}
-	body
+in (img)
+in (low < high)
+in (high <= 256)
 {
 	import core.memory;
 	static real divpt(real min, real max, real pt)
