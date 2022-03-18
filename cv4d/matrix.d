@@ -857,11 +857,7 @@ class UserDataMatrix: Matrix
 	alias Matrix.data data;
 	/// ditto
 	final @property void data(void[] newdata)
-	in
-	{
-		assert(data.length == step * rows);
-	}
-	body
+	in (data.length == step * rows)
 	{
 		handle.data.ptr = cast(ubyte*)newdata.ptr;
 	}

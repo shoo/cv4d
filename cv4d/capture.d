@@ -690,11 +690,7 @@ public:
 	 * 現在時刻[秒]を設定/取得
 	 */
 	@property void time(double sec)
-	in
-	{
-		assert(tmNow < sec);
-	}
-	body
+	in (tmNow < sec)
 	{
 		tmNow = sec;
 	}

@@ -143,12 +143,12 @@ struct BitmapFileData
 {
 	BitmapFileHeader file;
 	BitmapInformationHeader info;
-	uint[] palette()
+	uint[] palette() return
 	{
 		return (cast(uint*)((cast(ubyte*)&info) +
 		        BitmapInformationHeader.sizeof))[0..256];
 	}
-	void[] dib()
+	void[] dib() return
 	{
 		return ((cast(ubyte*)&this) + file.offset)[0..info.sizeImage];
 	}
@@ -255,11 +255,7 @@ public:
 	 * 外部の画像からクローンを作成
 	 */
 	this( in IplImage* img )
-	in
-	{
-		assert(img !is null);
-	}
-	body
+	in (img !is null)
 	{
 		auto tmp = cvCloneImage(img);
 		if (!tmp) error("cannot create clone.");
@@ -590,11 +586,7 @@ public:
 	 * 範囲の画素のデータにアクセス
 	 */
 	void[] roiRow(int y)
-		out(r)
-		{
-			assert(r.length % _image.nChannels == 0);
-		}
-		body
+	out(r; r.length % _image.nChannels == 0)
 	{
 		assert(0<=y);
 		assert(_image.roi ? y<_image.roi.height : y<_image.height);
@@ -674,7 +666,7 @@ public:
 			assert(mask.depth == IPL_DEPTH_8U || mask.depth == IPL_DEPTH_8S);
 		}
 	}
-	body
+	do
 	{
 		cvCopy(src._image, _image, mask ? mask._image: null);
 	}
@@ -787,13 +779,9 @@ public:
 	 * 画像を指定位置に描写する
 	 */
 	void draw(in Image src, CvPoint pt = cvPoint(0, 0))
-	in
-	{
-		assert(depth == src.depth);
-		assert(channels == src.channels);
-		assert(pixSize == src.pixSize);
-	}
-	body
+	in (depth == src.depth)
+	in (channels == src.channels)
+	in (pixSize == src.pixSize)
 	{
 		int sh, sw, sxmin, symin, sxmax;
 		int dh, dw, dxmin, dymin, dxmax, dymax;
@@ -1571,11 +1559,7 @@ class UserDataImage: Image
 	
 	///ditto
 	@property void data(void[] attachdata)
-	in
-	{
-		assert(attachdata.length == handle.imageSize);
-	}
-	body
+	in (attachdata.length == handle.imageSize)
 	{
 		handle.imageData = cast(ubyte*)attachdata.ptr;
 	}
