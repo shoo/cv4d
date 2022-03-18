@@ -1,0 +1,110 @@
+{
+    "name": "opencv",
+    "description": "OpenCV binaries sub-package",
+    "targetType": "none",
+    "license": "BSD 3-clause",
+    "copyright": "Copyright © 2018, SHOO",
+    "homepage": "https://github.com/shoo/cv4d",
+    "importPaths": ["."],
+    "sourcePath": "src",
+    "configurations": [
+        {
+            "name": "default",
+            "libs": [
+                "opencv_core2413",
+                "opencv_imgproc2413",
+                "opencv_highgui2413"
+            ]
+        },
+        {
+            "name": "win-dynamic",
+            "copyFiles-windows-x86": [
+                "bin32\\opencv_core2413.dll",
+                "bin32\\opencv_imgproc2413.dll",
+                "bin32\\opencv_highgui2413.dll"
+            ],
+            "copyFiles-windows-x86_64": [
+                "bin64\\opencv_core2413.dll",
+                "bin64\\opencv_imgproc2413.dll",
+                "bin64\\opencv_highgui2413.dll"
+            ],
+            "lflags-windows-x86":    ["/LIBPATH:$PACKAGE_DIR\\lib32mscoff-dynamic"],
+            "lflags-windows-x86_64": ["/LIBPATH:$PACKAGE_DIR\\lib64mscoff-dynamic"],
+            "libs-windows": [
+                "opencv_core2413",
+                "opencv_imgproc2413",
+                "opencv_highgui2413"
+            ]
+        },
+        {
+            "name": "win-dynamic-dbg",
+            "copyFiles-windows-x86": [
+                "bin32\\opencv_core2413d.dll",
+                "bin32\\opencv_imgproc2413d.dll",
+                "bin32\\opencv_highgui2413d.dll"
+            ],
+            "copyFiles-windows-x86_64": [
+                "bin64\\opencv_core2413d.dll",
+                "bin64\\opencv_imgproc2413d.dll",
+                "bin64\\opencv_highgui2413d.dll"
+            ],
+            "lflags-windows-x86":    ["/LIBPATH:$PACKAGE_DIR\\lib32mscoff-dynamic"],
+            "lflags-windows-x86_64": ["/LIBPATH:$PACKAGE_DIR\\lib64mscoff-dynamic"],
+            "libs-windows": [
+                "opencv_core2413d",
+                "opencv_imgproc2413d",
+                "opencv_highgui2413d"
+            ]
+        },
+        {
+            "name": "win-static",
+            "lflags-windows-x86":    ["/LIBPATH:$PACKAGE_DIR\\lib32mscoff-static"],
+            "lflags-windows-x86_64": ["/LIBPATH:$PACKAGE_DIR\\lib64mscoff-static"],
+            "libs-windows": [
+                "vfw32",
+                "IlmImf",
+                "libjasper",
+                "libjpeg",
+                "libpng",
+                "libtiff",
+                "opencv_core2413",
+                "opencv_imgproc2413",
+                "opencv_highgui2413"
+            ]
+        },
+        {
+            "name": "win-static-dbg",
+            "lflags-windows-x86":    ["/LIBPATH:$PACKAGE_DIR\\lib32mscoff-static"],
+            "lflags-windows-x86_64": ["/LIBPATH:$PACKAGE_DIR\\lib64mscoff-static"],
+            "libs-windows": [
+                "vfw32",
+                "IlmImfd",
+                "libjasperd",
+                "libjpegd",
+                "libpngd",
+                "libtiffd",
+                "opencv_core2413d",
+                "opencv_imgproc2413d",
+                "opencv_highgui2413d"
+            ]
+        },
+        {
+            "name": "win-dynamic-omf",
+            "lflags-windows-x86-dmd": ["+$PACKAGE_DIR\\lib32omf-dynamic\\"],
+            "copyFiles-windows-x86": [
+                "bin32\\opencv_core2413.dll",
+                "bin32\\opencv_imgproc2413.dll",
+                "bin32\\opencv_highgui2413.dll"
+            ],
+            "libs-windows": [
+                "opencv_core2413",
+                "opencv_imgproc2413",
+                "opencv_highgui2413"
+            ],
+            "preBuildCommands-windows": [
+                "cmd /C $PACKAGE_DIR\\lib32omf-dynamic\\coffimpliball.bat"
+            ]
+        }
+    ],
+    "authors": [ "SHOO" ]
+}
