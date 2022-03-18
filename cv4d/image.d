@@ -143,12 +143,12 @@ struct BitmapFileData
 {
 	BitmapFileHeader file;
 	BitmapInformationHeader info;
-	uint[] palette()
+	uint[] palette() return
 	{
 		return (cast(uint*)((cast(ubyte*)&info) +
 		        BitmapInformationHeader.sizeof))[0..256];
 	}
-	void[] dib()
+	void[] dib() return
 	{
 		return ((cast(ubyte*)&this) + file.offset)[0..info.sizeImage];
 	}
